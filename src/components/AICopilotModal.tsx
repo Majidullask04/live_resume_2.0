@@ -89,6 +89,14 @@ export const AICopilotModal: React.FC<AICopilotModalProps> = ({
       return `### 🌐 Google Microservices Platform\n\nDevOps implementation of Google's 10-microservice architecture on **Kubernetes (EKS/K3s)** with **Istio Service Mesh**, gRPC inter-service communication, mTLS security, and Prometheus/Grafana distributed telemetry.`;
     }
 
+    if (q.includes('student-os') || q.includes('student') || q.includes('academic')) {
+      return `### 🎓 student-os (Flagship Project)\n\nMajid's latest active project is an academic operating system and intelligent student workspace built with **TypeScript, React, and AWS Amplify**.\n\n- **Live App:** [majid-1.d1kytdzlw5ibag.amplifyapp.com](https://majid-1.d1kytdzlw5ibag.amplifyapp.com)\n- **GitHub:** [github.com/Majidullask04/student-os](https://github.com/Majidullask04/student-os)\n- **Key Features:** Automated scheduling, assignment intelligence, edge CDN distribution on AWS CloudFront.`;
+    }
+
+    if (q.includes('phone') || q.includes('whatsapp') || q.includes('call') || q.includes('number') || q.includes('mobile')) {
+      return `### 📞 Direct Contact & Phone\n\nYou can call or WhatsApp Majidulla directly at:\n- **Phone:** **${DATA.phone}** (${DATA.phoneRaw})\n- **Email:** **${DATA.email}**\n- **Location:** Hyderabad, Telangana, India\n\nHe is actively available for Full-Time AI Full-Stack, Backend, DevSecOps, and Cloud Engineering roles.`;
+    }
+
     // Check Knowledge base
     let bestMatch = DATA.aiKnowledgeBase[0];
     let maxScore = 0;
@@ -109,7 +117,7 @@ export const AICopilotModal: React.FC<AICopilotModalProps> = ({
     }
 
     // Default intelligent synthesis
-    return `Majidulla SK is an **AI Full-Stack Engineer & DevSecOps Specialist** proficient in **React, TypeScript, Node.js, Express, MongoDB, Python, AWS, Kubernetes, Docker, Jenkins, SonarQube, and Istio**.\n\nHe is currently open to full-time roles and high-impact internships. You can reach him at **${DATA.email}** or explore his projects directly on this live portfolio!`;
+    return `Majidulla SK is an **AI Full-Stack Engineer & DevSecOps Specialist** proficient in **React, TypeScript, Node.js, Express, MongoDB, Python, AWS, Kubernetes, Docker, Jenkins, SonarQube, and Istio**.\n\nHe is currently open to full-time roles and high-impact internships. You can reach him at **${DATA.phone}** or **${DATA.email}**!`;
   };
 
   const handleSendMessage = (textToSend?: string) => {
