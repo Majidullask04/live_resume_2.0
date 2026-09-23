@@ -26,7 +26,11 @@ import {
   Zap,
   Phone,
   PhoneCall,
-  Activity
+  Activity,
+  Cloud,
+  Boxes,
+  Server,
+  Wrench
 } from 'lucide-react';
 import { DATA, Project } from './data';
 import { AICopilotModal } from './components/AICopilotModal';
@@ -86,11 +90,21 @@ const SectionHeader = ({ title, subtitle }: { title: string; subtitle?: string }
   </div>
 );
 
+const getCategoryIcon = (category: string) => {
+  const cat = category.toLowerCase();
+  if (cat.includes("cloud") || cat.includes("infra")) return <Cloud size={15} className="text-amber-400" />;
+  if (cat.includes("container") || cat.includes("orchestr")) return <Boxes size={15} className="text-cyan-400" />;
+  if (cat.includes("ci/cd") || cat.includes("secops") || cat.includes("security")) return <ShieldCheck size={15} className="text-emerald-400" />;
+  if (cat.includes("ai") || cat.includes("full-stack") || cat.includes("development")) return <Sparkles size={15} className="text-purple-400" />;
+  if (cat.includes("observ") || cat.includes("tool")) return <Activity size={15} className="text-rose-400" />;
+  return <Cpu size={15} className="text-amber-400" />;
+};
+
 const getTechIcon = (tech: string) => {
   const t = tech.toLowerCase();
   if (t.includes("aws") || t.includes("s3") || t.includes("cloudfront") || t.includes("eks") || t.includes("ec2") || t.includes("iam") || t.includes("vpc") || t.includes("amplify")) return "devicon-amazonwebservices-plain text-[#FF9900]";
   if (t.includes("linux") || t.includes("ubuntu")) return "devicon-linux-plain text-white";
-  if (t.includes("bash") || t.includes("shell")) return "devicon-bash-plain text-white";
+  if (t.includes("bash") || t.includes("shell")) return "devicon-bash-plain text-[#4EAA25]";
   if (t.includes("terraform")) return "devicon-terraform-plain text-[#844FBA]";
   if (t.includes("docker")) return "devicon-docker-plain text-[#2496ED]";
   if (t.includes("kubernetes") || t.includes("k3s") || t.includes("helm")) return "devicon-kubernetes-plain text-[#326CE5]";
@@ -112,13 +126,14 @@ const getTechIcon = (tech: string) => {
   if (t.includes("mysql")) return "devicon-mysql-plain text-[#4479A1]";
   if (t.includes("nginx")) return "devicon-nginx-original text-[#009639]";
   if (t.includes("vercel")) return "devicon-vercel-original text-white";
+  if (t.includes("vite")) return "devicon-vitejs-plain text-[#646CFF]";
   return null;
 };
 
 export default function App() {
   const [expandedService, setExpandedService] = useState<number | null>(0);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
-  const [activeTechCategory, setActiveTechCategory] = useState<number>(0);
+  const [activeTechCategory, setActiveTechCategory] = useState<number | "all">("all");
   const [copiedEmail, setCopiedEmail] = useState<boolean>(false);
   const [copiedPhone, setCopiedPhone] = useState<boolean>(false);
   const [isSoundMuted, setIsSoundMuted] = useState<boolean>(false);
@@ -872,61 +887,173 @@ export default function App() {
         </section>
 
         {/* Tech Stack & Expertise */}
-        <section id="skills" className="py-12 md:py-20">
+        <section id="skills" className="py-16 md:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center mb-12 text-center">
             <div className="flex items-center gap-4 mb-4">
               <div className="w-8 h-px bg-amber-500" />
-              <span className="text-amber-500 text-xs font-mono font-bold tracking-[0.3em] uppercase">Core Tech Stack</span>
+              <span className="text-amber-500 text-xs font-mono font-bold tracking-[0.3em] uppercase">Engineered Arsenal</span>
               <div className="w-8 h-px bg-amber-500" />
             </div>
             
-            <h2 className="text-[3.2rem] md:text-[5rem] font-bold tracking-tight text-white leading-[1.05]">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-tight">
               Tools of the <span className="font-serif italic text-amber-500 font-medium tracking-normal">trade.</span>
             </h2>
+            <p className="text-neutral-400 text-xs sm:text-sm md:text-base font-mono max-w-2xl mt-3">
+              Full-spectrum stack across Cloud Infrastructure, Container Orchestration, CI/CD Automation, and AI-Driven Web Applications.
+            </p>
           </div>
 
-          {/* Categorized Tech Stack Tabs */}
-          <div className="flex justify-center gap-2 mb-10 overflow-x-auto pb-2 no-scrollbar">
-            {DATA.categorizedTechStack.map((group, idx) => (
-              <button
-                key={idx}
-                onClick={() => {
-                  sound.playClick();
-                  setActiveTechCategory(idx);
-                }}
-                className={`px-4 py-2 rounded-xl text-xs font-mono tracking-wider uppercase transition-all shrink-0 cursor-pointer ${
-                  activeTechCategory === idx
-                    ? "bg-amber-500 text-neutral-950 font-bold shadow-lg shadow-amber-500/20"
-                    : "bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-800"
-                }`}
-              >
-                {group.category}
-              </button>
-            ))}
+          {/* Categorized Tech Stack Tabs (Flex-wrap, non-clipping on all viewports) */}
+          <div className="flex flex-wrap justify-center items-center gap-2.5 mb-10 max-w-4xl mx-auto px-2">
+            <button
+              onClick={() => {
+                sound.playClick();
+                setActiveTechCategory("all");
+              }}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-mono tracking-wider uppercase transition-all cursor-pointer ${
+                activeTechCategory === "all"
+                  ? "bg-amber-500 text-neutral-950 font-bold shadow-lg shadow-amber-500/25 scale-105"
+                  : "bg-neutral-900/90 text-neutral-400 hover:text-white border border-neutral-800 hover:border-neutral-700"
+              }`}
+            >
+              <Layers size={14} />
+              <span>All Domains ({DATA.categorizedTechStack.reduce((acc, cat) => acc + cat.skills.length, 0)})</span>
+            </button>
+
+            {DATA.categorizedTechStack.map((group, idx) => {
+              const isActive = activeTechCategory === idx;
+              return (
+                <button
+                  key={idx}
+                  onClick={() => {
+                    sound.playClick();
+                    setActiveTechCategory(idx);
+                  }}
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-mono tracking-wider uppercase transition-all cursor-pointer ${
+                    isActive
+                      ? "bg-amber-500 text-neutral-950 font-bold shadow-lg shadow-amber-500/25 scale-105"
+                      : "bg-neutral-900/90 text-neutral-400 hover:text-white border border-neutral-800 hover:border-neutral-700"
+                  }`}
+                >
+                  {getCategoryIcon(group.category)}
+                  <span>{group.category}</span>
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded-md ${
+                    isActive ? "bg-neutral-950/20 text-neutral-950 font-bold" : "bg-neutral-800 text-neutral-400"
+                  }`}>
+                    {group.skills.length}
+                  </span>
+                </button>
+              );
+            })}
           </div>
 
-          <motion.div 
-            key={activeTechCategory}
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="flex flex-wrap gap-3 justify-center max-w-4xl mx-auto"
-          >
-            {DATA.categorizedTechStack[activeTechCategory].skills.map((tech, i) => (
-              <motion.span 
-                key={i}
-                whileHover={{ scale: 1.05, y: -2 }}
-                className="flex items-center gap-2.5 px-4 py-3 bg-neutral-900/90 border border-neutral-800 rounded-xl text-sm font-mono font-medium text-neutral-200 hover:text-white hover:border-amber-500/50 transition-all hover:shadow-[0_0_20px_rgba(245,158,11,0.2)] cursor-default"
+          {/* Tech Stack Display Area */}
+          <AnimatePresence mode="wait">
+            {activeTechCategory === "all" ? (
+              <motion.div
+                key="all-grid"
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -15 }}
+                transition={{ duration: 0.3 }}
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto"
               >
-                {getTechIcon(tech) ? (
-                  <i className={`text-lg ${getTechIcon(tech)}`}></i>
-                ) : (
-                  <span className="w-2 h-2 rounded-full bg-amber-500 opacity-80"></span>
-                )}
-                {tech}
-              </motion.span>
-            ))}
-          </motion.div>
+                {DATA.categorizedTechStack.map((group, idx) => (
+                  <div
+                    key={idx}
+                    className="flex flex-col bg-neutral-900/60 backdrop-blur-md border border-neutral-800/80 hover:border-amber-500/40 rounded-2xl p-6 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/5 group"
+                  >
+                    <div className="flex items-center justify-between pb-4 mb-4 border-b border-neutral-800/60">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2.5 rounded-xl bg-neutral-950 border border-neutral-800 group-hover:border-amber-500/40 transition-colors">
+                          {getCategoryIcon(group.category)}
+                        </div>
+                        <div>
+                          <h3 className="text-white text-sm sm:text-base font-bold tracking-tight">
+                            {group.category}
+                          </h3>
+                          <span className="text-[11px] font-mono text-neutral-400">
+                            {group.skills.length} technologies
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2 pt-1">
+                      {group.skills.map((tech, i) => {
+                        const iconClass = getTechIcon(tech);
+                        return (
+                          <span
+                            key={i}
+                            className="inline-flex items-center gap-2 px-3 py-1.5 bg-neutral-950/80 border border-neutral-800 rounded-lg text-xs font-mono text-neutral-300 hover:text-white hover:border-amber-500/50 hover:bg-neutral-900 transition-all hover:scale-105 cursor-default"
+                          >
+                            {iconClass ? (
+                              <i className={`${iconClass} text-sm`} />
+                            ) : (
+                              <span className="w-1.5 h-1.5 rounded-full bg-amber-500/80" />
+                            )}
+                            <span>{tech}</span>
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </motion.div>
+            ) : (
+              <motion.div
+                key={`single-${activeTechCategory}`}
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.98 }}
+                transition={{ duration: 0.3 }}
+                className="max-w-4xl mx-auto"
+              >
+                <div className="bg-neutral-900/80 border border-amber-500/30 rounded-3xl p-6 sm:p-8 md:p-10 shadow-2xl shadow-amber-500/5 backdrop-blur-xl">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 mb-8 border-b border-neutral-800">
+                    <div className="flex items-center gap-4">
+                      <div className="p-3.5 rounded-2xl bg-neutral-950 border border-amber-500/30 text-amber-400">
+                        {getCategoryIcon(DATA.categorizedTechStack[activeTechCategory].category)}
+                      </div>
+                      <div>
+                        <div className="text-amber-500 text-xs font-mono font-bold tracking-widest uppercase">
+                          Selected Domain
+                        </div>
+                        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-white tracking-tight">
+                          {DATA.categorizedTechStack[activeTechCategory].category}
+                        </h3>
+                      </div>
+                    </div>
+                    <span className="px-3.5 py-1.5 rounded-full bg-neutral-950 border border-neutral-800 text-neutral-300 font-mono text-xs w-fit">
+                      {DATA.categorizedTechStack[activeTechCategory].skills.length} core tools configured
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                    {DATA.categorizedTechStack[activeTechCategory].skills.map((tech, i) => {
+                      const iconClass = getTechIcon(tech);
+                      return (
+                        <motion.div
+                          key={i}
+                          whileHover={{ scale: 1.04, y: -2 }}
+                          className="flex items-center gap-3 p-3.5 bg-neutral-950/90 border border-neutral-800/90 hover:border-amber-500/60 rounded-xl text-neutral-200 hover:text-white transition-all shadow-sm group cursor-default"
+                        >
+                          <div className="w-8 h-8 rounded-lg bg-neutral-900 flex items-center justify-center border border-neutral-800 group-hover:border-amber-500/40 transition-colors shrink-0">
+                            {iconClass ? (
+                              <i className={`${iconClass} text-lg`} />
+                            ) : (
+                              <span className="w-2 h-2 rounded-full bg-amber-500" />
+                            )}
+                          </div>
+                          <span className="text-xs font-mono font-medium truncate">{tech}</span>
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </section>
 
       </main>
