@@ -23,7 +23,10 @@ import {
   Cpu,
   ShieldCheck,
   Send,
-  Zap
+  Zap,
+  Phone,
+  PhoneCall,
+  Activity
 } from 'lucide-react';
 import { DATA, Project } from './data';
 import { AICopilotModal } from './components/AICopilotModal';
@@ -31,6 +34,7 @@ import { ProjectDetailModal } from './components/ProjectDetailModal';
 import { CommandPaletteModal } from './components/CommandPaletteModal';
 import { ContactModal } from './components/ContactModal';
 import { ResumePreviewModal } from './components/ResumePreviewModal';
+import { LiveGitHubTracker } from './components/LiveGitHubTracker';
 import { sound } from './components/SoundEffects';
 
 const CustomCursor = () => {
@@ -84,7 +88,7 @@ const SectionHeader = ({ title, subtitle }: { title: string; subtitle?: string }
 
 const getTechIcon = (tech: string) => {
   const t = tech.toLowerCase();
-  if (t.includes("aws") || t.includes("s3") || t.includes("cloudfront") || t.includes("eks") || t.includes("ec2") || t.includes("iam") || t.includes("vpc")) return "devicon-amazonwebservices-plain text-[#FF9900]";
+  if (t.includes("aws") || t.includes("s3") || t.includes("cloudfront") || t.includes("eks") || t.includes("ec2") || t.includes("iam") || t.includes("vpc") || t.includes("amplify")) return "devicon-amazonwebservices-plain text-[#FF9900]";
   if (t.includes("linux") || t.includes("ubuntu")) return "devicon-linux-plain text-white";
   if (t.includes("bash") || t.includes("shell")) return "devicon-bash-plain text-white";
   if (t.includes("terraform")) return "devicon-terraform-plain text-[#844FBA]";
@@ -116,6 +120,7 @@ export default function App() {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [activeTechCategory, setActiveTechCategory] = useState<number>(0);
   const [copiedEmail, setCopiedEmail] = useState<boolean>(false);
+  const [copiedPhone, setCopiedPhone] = useState<boolean>(false);
   const [isSoundMuted, setIsSoundMuted] = useState<boolean>(false);
 
   // Modal Dialog States
@@ -180,13 +185,20 @@ export default function App() {
     setTimeout(() => setCopiedEmail(false), 2500);
   };
 
+  const handleCopyPhone = () => {
+    navigator.clipboard.writeText(DATA.phoneRaw);
+    sound.playSuccess();
+    setCopiedPhone(true);
+    setTimeout(() => setCopiedPhone(false), 2500);
+  };
+
   const toggleSound = () => {
     sound.enabled = !sound.enabled;
     setIsSoundMuted(!sound.enabled);
     if (sound.enabled) sound.playClick();
   };
 
-  const projectCategories = ["All", "DevSecOps & Cloud", "Microservices & K8s", "Full-Stack & AI", "Open Source & CNCF"];
+  const projectCategories = ["All", "Full-Stack & AI", "DevSecOps & Cloud", "Microservices & K8s", "Open Source & CNCF"];
 
   const filteredProjects = DATA.projects.filter(project => {
     if (selectedCategory === "All") return true;
@@ -202,11 +214,11 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-neutral-950 font-sans text-neutral-400 selection:bg-amber-500/30 selection:text-amber-200 cursor-default relative overflow-hidden">
-      {/* Background Glow Effects */}
+      {/* Background Glow Effects & Subtle Cyber Pattern */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-amber-500/8 blur-[150px]" />
-        <div className="absolute top-[40%] right-[-15%] w-[45%] h-[45%] rounded-full bg-cyan-500/5 blur-[160px]" />
-        <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-orange-500/8 blur-[150px]" />
+        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-amber-500/10 blur-[150px]" />
+        <div className="absolute top-[40%] right-[-15%] w-[45%] h-[45%] rounded-full bg-cyan-500/8 blur-[160px]" />
+        <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-orange-500/10 blur-[150px]" />
         <div className="absolute inset-0 bg-[radial-gradient(#262626_1px,transparent_1px)] [background-size:32px_32px] opacity-25"></div>
       </div>
       
@@ -219,10 +231,21 @@ export default function App() {
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.9 }}
-            className="fixed bottom-24 right-6 z-[110] flex items-center gap-2.5 px-4 py-3 bg-amber-500 text-neutral-950 font-medium text-xs rounded-xl shadow-xl shadow-amber-500/20 border border-amber-400"
+            className="fixed bottom-24 right-6 z-[110] flex items-center gap-2.5 px-4 py-3 bg-amber-500 text-neutral-950 font-medium text-xs rounded-2xl shadow-xl shadow-amber-500/20 border border-amber-400 font-mono"
           >
             <Check size={16} />
             <span>Email copied to clipboard ({DATA.email})</span>
+          </motion.div>
+        )}
+        {copiedPhone && (
+          <motion.div
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.9 }}
+            className="fixed bottom-24 right-6 z-[110] flex items-center gap-2.5 px-4 py-3 bg-emerald-500 text-neutral-950 font-bold text-xs rounded-2xl shadow-xl shadow-emerald-500/20 border border-emerald-400 font-mono"
+          >
+            <Check size={16} />
+            <span>Phone copied ({DATA.phone})</span>
           </motion.div>
         )}
       </AnimatePresence>
@@ -238,7 +261,7 @@ export default function App() {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, delay: 0.8 }}
-          className="flex items-center gap-2.5 px-4 sm:px-5 py-3 bg-neutral-900/90 hover:bg-amber-500 text-neutral-200 hover:text-neutral-950 backdrop-blur-md border border-amber-500/40 hover:border-amber-400 rounded-full shadow-xl hover:shadow-[0_0_25px_rgba(245,158,11,0.4)] transition-all group cursor-pointer active:scale-95"
+          className="flex items-center gap-2.5 px-4 sm:px-5 py-3.5 bg-neutral-900/90 hover:bg-amber-500 text-neutral-200 hover:text-neutral-950 backdrop-blur-md border border-amber-500/40 hover:border-amber-400 rounded-full shadow-2xl hover:shadow-[0_0_30px_rgba(245,158,11,0.4)] transition-all group cursor-pointer active:scale-95"
         >
           <span className="relative flex h-2.5 w-2.5">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
@@ -262,6 +285,16 @@ export default function App() {
           <span>Cmd + K</span>
         </button>
 
+        <a
+          href={`tel:${DATA.phoneRaw}`}
+          onClick={handleCopyPhone}
+          title={`Call or Copy Phone: ${DATA.phone}`}
+          className="flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-neutral-900/80 hover:bg-emerald-500/20 border border-neutral-800 hover:border-emerald-500/50 text-neutral-400 hover:text-emerald-300 text-xs font-mono backdrop-blur-md transition-all cursor-pointer"
+        >
+          <Phone size={13} className="text-emerald-400" />
+          <span>{DATA.phone}</span>
+        </a>
+
         <button
           onClick={toggleSound}
           title={isSoundMuted ? "Unmute sound effects" : "Mute sound effects"}
@@ -278,17 +311,19 @@ export default function App() {
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         className="fixed top-0 w-full z-50 px-4 sm:px-8 py-4 flex justify-between items-center backdrop-blur-md bg-neutral-950/70 border-b border-neutral-800/50"
       >
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <a href="#landing" className="font-display font-bold text-white tracking-tight text-lg hover:text-amber-400 transition-colors flex items-center gap-2">
             <span>{DATA.name.toUpperCase()}</span>
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-400 border border-amber-500/30 hidden sm:inline">
-              2.0 LIVE
+            <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 hidden sm:inline flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              LIVE GITHUB 2.0
             </span>
           </a>
         </div>
 
         <div className="hidden lg:flex space-x-7 text-xs uppercase tracking-widest font-semibold font-mono text-neutral-400">
           <a href="#about" className="hover:text-amber-400 transition-colors">About</a>
+          <a href="#github-live" className="hover:text-amber-400 transition-colors">GitHub Live</a>
           <a href="#services" className="hover:text-amber-400 transition-colors">Capabilities</a>
           <a href="#experience" className="hover:text-amber-400 transition-colors">Experience</a>
           <a href="#work" className="hover:text-amber-400 transition-colors">Projects</a>
@@ -297,6 +332,16 @@ export default function App() {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
+          {/* Direct Phone Call Trigger */}
+          <a 
+            href={`tel:${DATA.phoneRaw}`}
+            onClick={handleCopyPhone}
+            className="hidden sm:flex items-center gap-1.5 text-xs font-mono text-emerald-400 hover:text-emerald-300 border border-emerald-500/30 hover:border-emerald-500/60 px-3 py-1.5 rounded-xl transition-all bg-emerald-950/30 cursor-pointer"
+          >
+            <Phone size={13} />
+            <span>{DATA.phone}</span>
+          </a>
+
           {/* ATS Resume View Trigger */}
           <button 
             onClick={() => {
@@ -315,7 +360,7 @@ export default function App() {
               sound.playClick();
               setIsContactOpen(true);
             }}
-            className="flex items-center gap-1.5 text-xs font-mono text-neutral-950 font-bold bg-amber-500 hover:bg-amber-400 px-3.5 py-1.5 rounded-xl transition-all shadow-md shadow-amber-500/10 cursor-pointer active:scale-95"
+            className="flex items-center gap-1.5 text-xs font-mono text-neutral-950 font-bold bg-amber-500 hover:bg-amber-400 px-3.5 py-1.5 rounded-xl transition-all shadow-md shadow-amber-500/20 cursor-pointer active:scale-95"
           >
             <Send size={12} />
             <span>Connect</span>
@@ -323,7 +368,7 @@ export default function App() {
         </div>
       </motion.nav>
 
-      <main className="max-w-5xl mx-auto px-6 pt-32 pb-24 md:pt-48 md:pb-32 flex flex-col gap-32 md:gap-48">
+      <main className="max-w-5xl mx-auto px-6 pt-32 pb-24 md:pt-48 md:pb-32 flex flex-col gap-28 md:gap-40">
         
         {/* Landing Hero Section */}
         <section className="relative flex flex-col items-center justify-center min-h-[85vh] pt-6 overflow-visible z-10 w-full" id="landing">
@@ -365,40 +410,54 @@ export default function App() {
             transition={{ duration: 0.8, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="relative z-30 mt-[-3.5rem] md:mt-[-4.5rem] text-center flex flex-col items-center gap-2"
           >
-             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-900/80 border border-amber-500/30 text-amber-400 text-xs font-mono uppercase tracking-widest backdrop-blur-md">
+             <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-neutral-900/90 border border-amber-500/30 text-amber-400 text-xs font-mono uppercase tracking-widest backdrop-blur-md shadow-lg">
                 <Sparkles size={12} />
-                <span>AI Full-Stack • Cloud • DevSecOps</span>
+                <span>AI Full-Stack • Cloud Infrastructure • DevSecOps</span>
              </div>
              
              <h2 className="text-4xl md:text-6xl lg:text-7xl font-serif text-white tracking-tight leading-none mt-2">
                 {DATA.title}
              </h2>
 
-             {/* Hero Action Buttons */}
+             {/* Hero Action Buttons & Direct Channels */}
              <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
                 <button
                   onClick={() => {
                     sound.playOpenModal();
                     setIsAICopilotOpen(true);
                   }}
-                  className="px-5 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-mono font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-amber-500/20 transition-all cursor-pointer active:scale-95"
+                  className="px-5 py-3 rounded-2xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-mono font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-xl shadow-amber-500/20 transition-all cursor-pointer active:scale-95"
                 >
                   <Bot size={15} />
                   <span>Interview AI Copilot</span>
                 </button>
+
+                <a
+                  href={`tel:${DATA.phoneRaw}`}
+                  onClick={() => sound.playPop()}
+                  className="px-5 py-3 rounded-2xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 font-mono text-xs uppercase tracking-wider border border-emerald-500/40 flex items-center gap-2 transition-all cursor-pointer"
+                >
+                  <Phone size={15} />
+                  <span>Direct: {DATA.phone}</span>
+                </a>
 
                 <button
                   onClick={() => {
                     sound.playClick();
                     setIsResumeOpen(true);
                   }}
-                  className="px-5 py-3 rounded-xl bg-neutral-900/80 hover:bg-neutral-800 text-white font-mono text-xs uppercase tracking-wider border border-neutral-800 hover:border-amber-500/50 flex items-center gap-2 transition-all cursor-pointer"
+                  className="px-5 py-3 rounded-2xl bg-neutral-900/80 hover:bg-neutral-800 text-white font-mono text-xs uppercase tracking-wider border border-neutral-800 hover:border-amber-500/50 flex items-center gap-2 transition-all cursor-pointer"
                 >
                   <FileText size={15} className="text-amber-400" />
-                  <span>View Resume PDF</span>
+                  <span>Resume PDF</span>
                 </button>
              </div>
           </motion.div>
+        </section>
+
+        {/* Live GitHub Telemetry Section */}
+        <section id="github-live" className="py-2">
+          <LiveGitHubTracker />
         </section>
 
         {/* About Section */}
@@ -452,7 +511,7 @@ export default function App() {
                       hidden: { opacity: 0, y: 10 },
                       visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
                     }}
-                    className="flex flex-col p-4 bg-neutral-900/40 border border-neutral-800/70 rounded-xl hover:border-amber-500/40 transition-colors"
+                    className="flex flex-col p-4 bg-neutral-900/40 border border-neutral-800/70 rounded-2xl hover:border-amber-500/40 transition-colors"
                   >
                     <span className="text-2xl md:text-3xl font-bold font-mono text-amber-400 mb-1">{stat.value}</span>
                     <span className="text-white text-xs font-semibold leading-snug">{stat.label}</span>
@@ -494,7 +553,7 @@ export default function App() {
                       sound.playClick();
                       setExpandedService(isExpanded ? null : idx);
                     }}
-                    className="group relative flex flex-col p-8 md:p-10 border border-dashed border-neutral-700/60 bg-[#0a0a0a]/60 transition-all hover:border-amber-500/50 cursor-pointer rounded-xl"
+                    className="group relative flex flex-col p-8 md:p-10 border border-dashed border-neutral-700/60 bg-[#0a0a0a]/60 transition-all hover:border-amber-500/50 cursor-pointer rounded-2xl"
                   >
                     <div className="absolute top-0 left-0 w-2.5 h-2.5 border-t-[3px] border-l-[3px] border-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.8)] -translate-x-[2px] -translate-y-[2px]" />
                     <div className="absolute top-0 right-0 w-2.5 h-2.5 border-t-[3px] border-r-[3px] border-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.8)] translate-x-[2px] -translate-y-[2px]" />
@@ -540,7 +599,7 @@ export default function App() {
                       )}
                     </div>
 
-                    <div className="absolute bottom-8 right-8 w-8 h-8 flex items-center justify-center border border-neutral-700/50 rounded-lg transition-colors group-hover:border-amber-500 text-neutral-500 group-hover:text-white bg-[#0a0a0a]">
+                    <div className="absolute bottom-8 right-8 w-8 h-8 flex items-center justify-center border border-neutral-700/50 rounded-xl transition-colors group-hover:border-amber-500 text-neutral-500 group-hover:text-white bg-[#0a0a0a]">
                       {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                     </div>
                   </motion.div>
@@ -593,7 +652,7 @@ export default function App() {
                   <div className="hidden md:block absolute left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-amber-900 border border-amber-500/50 shadow-[0_0_10px_rgba(245,158,11,0.2)] z-10" />
 
                   <div className="w-full md:w-1/2 pl-0 md:pl-12">
-                    <div className="text-neutral-400 text-sm md:text-base leading-relaxed bg-neutral-900/40 p-5 rounded-xl border border-neutral-800/60 flex flex-col gap-3">
+                    <div className="text-neutral-400 text-sm md:text-base leading-relaxed bg-neutral-900/40 p-5 rounded-2xl border border-neutral-800/60 flex flex-col gap-3">
                       <p>{exp.description}</p>
                       {exp.highlights && exp.highlights.length > 0 && (
                         <ul className="space-y-1 pt-2 border-t border-neutral-800/70 text-xs font-mono text-neutral-300">
@@ -677,7 +736,7 @@ export default function App() {
                 <span className="font-serif italic text-amber-500 font-medium tracking-normal">Implementations.</span>
               </h2>
               <a href={DATA.links.github} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-xs uppercase font-mono tracking-widest text-neutral-400 hover:text-amber-400 transition-colors pb-2 border-b border-neutral-800 hover:border-amber-500 w-fit">
-                GitHub Repositories <ArrowUpRight size={14} />
+                GitHub Repositories ({DATA.stats[0].value}) <ArrowUpRight size={14} />
               </a>
             </div>
           </div>
@@ -723,7 +782,7 @@ export default function App() {
                   hidden: { opacity: 0, scale: 0.95, y: 20 },
                   visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.5 } }
                 }}
-                className="group relative flex flex-col p-8 border border-dashed border-neutral-700/60 bg-[#0a0a0a]/60 hover:border-amber-500/50 transition-colors duration-500 overflow-hidden rounded-2xl justify-between"
+                className="group relative flex flex-col p-8 border border-dashed border-neutral-700/60 bg-[#0a0a0a]/60 hover:border-amber-500/50 transition-colors duration-500 overflow-hidden rounded-3xl justify-between"
               >
                 <div className="absolute top-0 left-0 w-2.5 h-2.5 border-t-[3px] border-l-[3px] border-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.8)] -translate-x-[2px] -translate-y-[2px]" />
                 <div className="absolute top-0 right-0 w-2.5 h-2.5 border-t-[3px] border-r-[3px] border-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.8)] translate-x-[2px] -translate-y-[2px]" />
@@ -748,7 +807,7 @@ export default function App() {
 
                   {/* Highlights if available */}
                   {project.highlights && project.highlights.length > 0 && (
-                    <div className="mb-6 p-3 bg-neutral-950/60 rounded-xl border border-neutral-800/60 text-xs font-mono text-neutral-300 space-y-1">
+                    <div className="mb-6 p-3.5 bg-neutral-950/70 rounded-2xl border border-neutral-800/60 text-xs font-mono text-neutral-300 space-y-1.5">
                       {project.highlights.slice(0, 2).map((h, i) => (
                         <div key={i} className="flex items-start gap-2">
                           <span className="text-amber-400">▹</span>
@@ -907,12 +966,13 @@ export default function App() {
               <span className="text-amber-500 text-xs font-mono font-bold tracking-[0.3em] uppercase">Initiate Contact</span>
             </div>
             
-            <h2 className="text-[3.5rem] md:text-[5.5rem] font-bold tracking-tight text-white leading-[1.05] mb-10">
+            <h2 className="text-[3.5rem] md:text-[5.5rem] font-bold tracking-tight text-white leading-[1.05] mb-8">
               Let's build <span className="font-serif italic text-amber-500 font-medium tracking-normal">intelligent software</span><br />
               worth shipping.
             </h2>
-            
-            <div className="flex flex-wrap items-center gap-4">
+
+            {/* Direct Connect Pills */}
+            <div className="flex flex-wrap items-center gap-4 mb-4">
               <button 
                 onClick={() => {
                   sound.playOpenModal();
@@ -923,6 +983,16 @@ export default function App() {
                 <span className="text-xl md:text-3xl text-white font-medium">{DATA.email}</span>
                 <ArrowUpRight className="text-neutral-500 group-hover:text-amber-500 transition-colors" size={24} />
               </button>
+
+              <a 
+                href={`tel:${DATA.phoneRaw}`}
+                onClick={handleCopyPhone}
+                className="inline-flex items-center gap-3 px-6 py-5 rounded-full border border-emerald-500/40 hover:border-emerald-500 hover:shadow-[0_0_30px_rgba(16,185,129,0.25)] transition-all bg-emerald-950/40 backdrop-blur-sm text-emerald-300 group cursor-pointer"
+                title="Direct Phone Line / WhatsApp"
+              >
+                <Phone size={22} className="text-emerald-400" />
+                <span className="text-lg md:text-xl font-mono font-bold text-white">{DATA.phone}</span>
+              </a>
 
               <button 
                 onClick={handleCopyEmail}
@@ -948,10 +1018,8 @@ export default function App() {
                 <p className="text-white text-xs font-medium">{DATA.location}</p>
               </div>
               <div className="flex flex-col gap-2">
-                <span className="text-[10px] tracking-[0.2em] uppercase text-neutral-500 font-mono font-bold">Local Time</span>
-                <p className="text-white text-xs font-medium font-mono">
-                  {new Date().toLocaleTimeString('en-US', { timeZone: 'Asia/Kolkata', hour12: false, hour: '2-digit', minute: '2-digit' })} IST
-                </p>
+                <span className="text-[10px] tracking-[0.2em] uppercase text-neutral-500 font-mono font-bold">Direct Phone</span>
+                <p className="text-emerald-400 text-xs font-mono font-bold">{DATA.phone}</p>
               </div>
               <div className="flex flex-col gap-2">
                 <span className="text-[10px] tracking-[0.2em] uppercase text-neutral-500 font-mono font-bold">Open To</span>
@@ -966,41 +1034,41 @@ export default function App() {
             <div className="md:col-span-6 flex flex-col gap-3 pr-4">
               <span className="text-amber-500 font-mono text-xs uppercase tracking-widest font-bold">Mission & Trajectory</span>
               <p className="text-neutral-400 text-sm md:text-base italic font-serif leading-relaxed">
-                Building full-stack web applications with <span className="font-sans font-medium text-white not-italic">React, Node.js, Express & MongoDB</span>, while expanding into <span className="font-sans font-medium text-amber-400 not-italic">Machine Learning</span> and production cloud infrastructure — quiet, focused, and deeply technical.
+                Building full-stack web applications with <span className="font-sans font-medium text-white not-italic">React, Node.js, Express & MongoDB</span>, while expanding into <span className="font-sans font-medium text-amber-400 not-italic">Machine Learning & AI</span> and production cloud infrastructure — quiet, focused, and deeply technical.
               </p>
             </div>
             
             {/* Quick Links Column */}
             <div className="md:col-span-3 flex flex-col gap-3">
               <span className="text-neutral-500 font-mono text-[10px] uppercase tracking-widest font-bold mb-1">Navigation</span>
-              <a href="#about" className="text-neutral-400 hover:text-amber-400 transition-colors text-xs font-mono flex items-center justify-between w-28 py-1 border-b border-neutral-900 hover:border-neutral-700">
+              <a href="#about" className="text-neutral-400 hover:text-amber-400 transition-colors text-xs font-mono flex items-center justify-between w-32 py-1 border-b border-neutral-900 hover:border-neutral-700">
                 About <ArrowUpRight size={12} className="text-neutral-600" />
               </a>
-              <a href="#services" className="text-neutral-400 hover:text-amber-400 transition-colors text-xs font-mono flex items-center justify-between w-28 py-1 border-b border-neutral-900 hover:border-neutral-700">
+              <a href="#github-live" className="text-neutral-400 hover:text-amber-400 transition-colors text-xs font-mono flex items-center justify-between w-32 py-1 border-b border-neutral-900 hover:border-neutral-700">
+                GitHub Live <ArrowUpRight size={12} className="text-neutral-600" />
+              </a>
+              <a href="#services" className="text-neutral-400 hover:text-amber-400 transition-colors text-xs font-mono flex items-center justify-between w-32 py-1 border-b border-neutral-900 hover:border-neutral-700">
                 Capabilities <ArrowUpRight size={12} className="text-neutral-600" />
               </a>
-              <a href="#experience" className="text-neutral-400 hover:text-amber-400 transition-colors text-xs font-mono flex items-center justify-between w-28 py-1 border-b border-neutral-900 hover:border-neutral-700">
+              <a href="#experience" className="text-neutral-400 hover:text-amber-400 transition-colors text-xs font-mono flex items-center justify-between w-32 py-1 border-b border-neutral-900 hover:border-neutral-700">
                 Experience <ArrowUpRight size={12} className="text-neutral-600" />
               </a>
-              <a href="#work" className="text-neutral-400 hover:text-amber-400 transition-colors text-xs font-mono flex items-center justify-between w-28 py-1 border-b border-neutral-900 hover:border-neutral-700">
+              <a href="#work" className="text-neutral-400 hover:text-amber-400 transition-colors text-xs font-mono flex items-center justify-between w-32 py-1 border-b border-neutral-900 hover:border-neutral-700">
                 Projects <ArrowUpRight size={12} className="text-neutral-600" />
-              </a>
-              <a href="#skills" className="text-neutral-400 hover:text-amber-400 transition-colors text-xs font-mono flex items-center justify-between w-28 py-1 border-b border-neutral-900 hover:border-neutral-700">
-                Tech Stack <ArrowUpRight size={12} className="text-neutral-600" />
               </a>
             </div>
 
             {/* Socials & Connect Column */}
             <div className="md:col-span-3 flex flex-col gap-3">
               <span className="text-neutral-500 font-mono text-[10px] uppercase tracking-widest font-bold mb-1">Connect</span>
-              <a href={DATA.links.github} target="_blank" rel="noreferrer" className="text-neutral-400 hover:text-amber-400 transition-colors text-xs font-mono flex items-center justify-between w-32 py-1 border-b border-neutral-900 hover:border-neutral-700">
-                <span className="flex items-center gap-1.5"><Github size={12} /> GitHub</span> <ArrowUpRight size={12} className="text-neutral-600" />
+              <a href={DATA.links.github} target="_blank" rel="noreferrer" className="text-neutral-400 hover:text-amber-400 transition-colors text-xs font-mono flex items-center justify-between w-36 py-1 border-b border-neutral-900 hover:border-neutral-700">
+                <span className="flex items-center gap-1.5"><Github size={12} /> GitHub ({DATA.stats[0].value})</span> <ArrowUpRight size={12} className="text-neutral-600" />
               </a>
-              <a href={DATA.links.linkedin} target="_blank" rel="noreferrer" className="text-neutral-400 hover:text-amber-400 transition-colors text-xs font-mono flex items-center justify-between w-32 py-1 border-b border-neutral-900 hover:border-neutral-700">
+              <a href={DATA.links.linkedin} target="_blank" rel="noreferrer" className="text-neutral-400 hover:text-amber-400 transition-colors text-xs font-mono flex items-center justify-between w-36 py-1 border-b border-neutral-900 hover:border-neutral-700">
                 <span className="flex items-center gap-1.5"><Linkedin size={12} /> LinkedIn</span> <ArrowUpRight size={12} className="text-neutral-600" />
               </a>
-              <a href={DATA.links.twitter} target="_blank" rel="noreferrer" className="text-neutral-400 hover:text-amber-400 transition-colors text-xs font-mono flex items-center justify-between w-32 py-1 border-b border-neutral-900 hover:border-neutral-700">
-                <span className="flex items-center gap-1.5"><Twitter size={12} /> X / Twitter</span> <ArrowUpRight size={12} className="text-neutral-600" />
+              <a href={`tel:${DATA.phoneRaw}`} className="text-neutral-400 hover:text-emerald-400 transition-colors text-xs font-mono flex items-center justify-between w-36 py-1 border-b border-neutral-900 hover:border-neutral-700">
+                <span className="flex items-center gap-1.5"><Phone size={12} className="text-emerald-400" /> {DATA.phoneRaw}</span> <ArrowUpRight size={12} className="text-neutral-600" />
               </a>
             </div>
           </div>
@@ -1008,7 +1076,7 @@ export default function App() {
           {/* Copyright & Scroll to Top Bar */}
           <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-6 text-[10px] tracking-[0.2em] font-mono text-neutral-500 uppercase">
             <div>
-              &copy; {new Date().getFullYear()} {DATA.name} • LIVE RESUME 2.0
+              &copy; {new Date().getFullYear()} {DATA.name} • LIVE RESUME 2.0 • {DATA.phone}
             </div>
             <div className="flex items-center gap-8">
               <button 

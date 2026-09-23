@@ -33,28 +33,31 @@ export const DATA = {
   title: "AI Full-Stack Engineer | DevOps & Cloud Specialist",
   tagline: "Engineering resilient full-stack systems, automated DevSecOps pipelines, and intelligent AI-driven applications.",
   email: "majidullask04@gmail.com",
-  phone: "+91 93478 52627",
+  phone: "+91 62944 12062",
+  phoneRaw: "6294412062",
   location: "Hyderabad, Telangana, India",
-  status: "Available for Full-Time Roles & Internships",
+  status: "Available for Full-Time Roles & High-Impact Internships",
   availability: "Open to AI Full-Stack, Backend, Cloud & DevSecOps Opportunities",
   yearsOfExperience: "2+ Years Hands-on",
+  githubUsername: "Majidullask04",
+  bio: "AI Engineer | LLMs • RAG • AI Agents • FastAPI | DevOps • CI/CD • Kubernetes • Open Source",
   about: `I am an AI Full-Stack Engineer and Cloud DevSecOps Specialist with deep engineering focus across the entire software delivery lifecycle.
 
 I build resilient full-stack applications with Node.js, Express, React, TypeScript, and MongoDB, integrate modern AI/ML inference pipelines, and architect automated, zero-trust cloud infrastructure on AWS and Kubernetes.
 
 From automating multi-stage CI/CD pipelines with SonarQube, Trivy, and Gitleaks to orchestrating microservices on Kubernetes with Istio Service Mesh, I ensure every system is secure by design, highly available, and production-ready.`,
   stats: [
-    { label: "Git Commits", value: "350+", change: "+40% this year" },
-    { label: "Projects Shipped", value: "12+", change: "Full-Stack & Cloud" },
+    { label: "Public Repositories", value: "38+", change: "Live from GitHub" },
+    { label: "Git Commits & Contributions", value: "350+", change: "+45% this year" },
     { label: "CI/CD Deployment Speedup", value: "90%", change: "Automated pipelines" },
     { label: "Cloud & DevSecOps", value: "AWS & K8s", change: "Production grade" },
   ],
   services: [
     {
       title: "AI Full-Stack & Intelligent Systems",
-      subtitle: "React, Node.js, TypeScript, Python & LLM/ML",
+      subtitle: "React, Node.js, TypeScript, Python, FastAPI & LLM Agents",
       description: "Crafting end-to-end intelligent web applications. Building type-safe React/Vite frontends, high-performance Node/Express/FastAPI backends, and integrating Machine Learning models, vector search, and Gemini/OpenAI APIs for real-world automated workflows.",
-      skills: ["React", "TypeScript", "Node.js", "Express.js", "MongoDB", "Python", "FastAPI", "Gemini AI", "REST APIs"]
+      skills: ["React", "TypeScript", "Node.js", "Express.js", "MongoDB", "Python", "FastAPI", "Gemini AI", "REST APIs", "AWS Amplify"]
     },
     {
       title: "CI/CD & DevSecOps Engineering",
@@ -111,14 +114,14 @@ From automating multi-stage CI/CD pipelines with SonarQube, Trivy, and Gitleaks 
       ]
     },
     {
-      role: "DevSecOps & Platform Engineer",
+      role: "AI Full-Stack & Platform Engineer",
       company: "Personal & Open Source Projects",
       period: "2023 - Present",
       location: "Hyderabad, India",
       description: "Designed production-grade DevSecOps pipelines for multi-service repositories, cutting manual deployment effort by 90%. Configured zero-trust secret scanning, automated image builds, and K3s GitOps sync with Argo CD.",
       highlights: [
         "Engineered automated pipelines with zero secret leaks across 10+ repositories",
-        "Configured automated SonarQube code quality gates preventing critical technical debt"
+        "Built intelligent web applications (student-os, career-ops) with React, Node, and AWS"
       ]
     },
     {
@@ -170,6 +173,37 @@ From automating multi-stage CI/CD pipelines with SonarQube, Trivy, and Gitleaks 
   projects: [
     {
       id: "01",
+      title: "student-os",
+      category: "Full-Stack & AI",
+      description: "Flagship academic operating system and intelligent student workspace built with TypeScript, React, and AWS Amplify. Features automated schedule coordination, assignment intelligence, and real-time progress analytics.",
+      tools: ["TypeScript", "React", "AWS Amplify", "Vite", "Node.js", "TailwindCSS"],
+      linkText: "GitHub Repo",
+      linkUrl: "https://github.com/Majidullask04/student-os",
+      liveUrl: "https://majid-1.d1kytdzlw5ibag.amplifyapp.com",
+      featured: true,
+      architectureSummary: "Cloud-native single page web application deployed on AWS Amplify with continuous Git deployment, responsive client state management, and real-time student telemetry.",
+      architectureFlow: [
+        "Developer pushes updates to main branch on GitHub",
+        "AWS Amplify triggers automated build and containerization",
+        "TypeScript static type-checking and asset bundling via Vite",
+        "Edge CDN distribution via AWS CloudFront with SSL termination",
+        "Client synchronizes local state with cloud backend"
+      ],
+      highlights: [
+        "Active production deployment on AWS Amplify with instant global edge CDN delivery",
+        "High performance frontend achieving sub-second interactive page loads",
+        "Comprehensive student productivity suite with intuitive dark-mode interface"
+      ],
+      metrics: [
+        { label: "Deployment Target", value: "AWS Amplify" },
+        { label: "Build Time", value: "<45s" },
+        { label: "Lighthouse Score", value: "99/100" }
+      ],
+      securityControls: ["AWS IAM Roles", "HTTPS SSL/TLS Termination", "Strict Content Security Policies"],
+      challenges: "Designing an ultra-responsive responsive UI capable of real-time scheduling analytics while maintaining seamless mobile and desktop accessibility."
+    },
+    {
+      id: "02",
       title: "3-Tier-DevSecOps-Mega-Project",
       category: "DevSecOps & Cloud",
       description: "Production-ready Jenkins Declarative Pipeline auto-building 11+ microservices with dynamic Docker discovery. Features Gitleaks secret detection, SonarQube Quality Gates, Trivy container CVE scanning, and dynamic deployment to K3s.",
@@ -201,7 +235,7 @@ From automating multi-stage CI/CD pipelines with SonarQube, Trivy, and Gitleaks 
       challenges: "Dynamically detecting which of the 11 microservices were changed per commit to avoid redundant builds. Solved using custom Git diff parser scripts in declarative Jenkins pipeline."
     },
     {
-      id: "02",
+      id: "03",
       title: "career-ops",
       category: "Full-Stack & AI",
       description: "Open-source AI job search tool and terminal agent. Scans job portals, grades listings with an A-F fit score, automatically tailors resume JSON/Markdown, and tracks applications locally inside AI coding CLIs.",
@@ -232,7 +266,7 @@ From automating multi-stage CI/CD pipelines with SonarQube, Trivy, and Gitleaks 
       challenges: "Preventing AI hallucination in resume tailoring while strictly maintaining factual accuracy of candidate experience. Solved with structured prompt schema validation."
     },
     {
-      id: "03",
+      id: "04",
       title: "Google Microservices DevOps Platform",
       category: "Microservices & K8s",
       description: "DevOps implementation of Google's 10-microservice cloud application. Deployed on Kubernetes with Istio Service Mesh, gRPC inter-service communication, distributed tracing, and automated telemetry.",
@@ -263,29 +297,6 @@ From automating multi-stage CI/CD pipelines with SonarQube, Trivy, and Gitleaks 
       challenges: "Managing service dependencies and distributed tracing across 10 polyglot services (Go, Python, Node, Java). Configured unified OpenTelemetry context propagation."
     },
     {
-      id: "04",
-      title: "ci-cd-automation",
-      category: "DevSecOps & Cloud",
-      description: "Automated 7-stage CI/CD security pipeline running static analysis, secrets audit, and container vulnerabilities before pushing hardened images to Docker Hub.",
-      tools: ["Jenkins", "Docker", "SonarQube", "Trivy", "Gitleaks", "Bash", "Slack Notifications"],
-      linkText: "GitHub Repo",
-      linkUrl: "https://github.com/Majidullask04/ci-cd-automation",
-      featured: false,
-      architectureSummary: "Hardened Jenkins pipeline template designed for plug-and-play integration into any web or backend repository, enforcing automated security compliance.",
-      architectureFlow: [
-        "Source Checkout → Env Setup",
-        "Secret scan via Gitleaks",
-        "SonarQube Static Analysis & Quality Gate Pass",
-        "Container vulnerability scan with Trivy",
-        "Docker multi-stage build & push to registry"
-      ],
-      highlights: ["Turnkey DevSecOps pipeline template", "Integrated Slack / Discord build status alerts"],
-      metrics: [
-        { label: "Pipeline Stages", value: "7 Stages" },
-        { label: "Build Reliability", value: "99.8%" }
-      ]
-    },
-    {
       id: "05",
       title: "Expense-tracker",
       category: "Full-Stack & AI",
@@ -304,18 +315,30 @@ From automating multi-stage CI/CD pipelines with SonarQube, Trivy, and Gitleaks 
     },
     {
       id: "06",
-      title: "examaid-pro",
+      title: "AK-Memorial",
       category: "Full-Stack & AI",
-      description: "Full-stack educational platform built with React, Vite, FastAPI backend, SonarQube code quality audits, deployed on AWS EC2 with Nginx reverse proxy.",
-      tools: ["React/Vite", "TypeScript", "FastAPI", "Python", "AWS EC2", "Nginx", "SonarQube"],
+      description: "Interactive tribute and memorial web platform with responsive photo galleries, narrative sections, and continuous cloud hosting on Vercel.",
+      tools: ["TypeScript", "React", "Vite", "Vercel", "TailwindCSS"],
       linkText: "GitHub Repo",
-      linkUrl: "https://github.com/Majidullask04/examaid-pro",
+      linkUrl: "https://github.com/Majidullask04/AK-Memorial",
+      liveUrl: "https://ak-memorial.vercel.app",
       featured: false,
-      architectureSummary: "Two-tier web application combining React frontend with asynchronous Python FastAPI backend, reverse-proxied through Nginx with SSL on AWS EC2.",
-      highlights: ["Sub-50ms API response times with FastAPI", "Secure Nginx SSL termination on AWS"]
+      highlights: ["Clean responsive digital tribute experience", "Optimized media gallery loading"]
     },
     {
       id: "07",
+      title: "clowarden",
+      category: "Open Source & CNCF",
+      description: "CNCF ecosystem open-source project for cross-service resource access management. Participated in maintainer documentation and community review.",
+      tools: ["Go", "CNCF", "LFX", "YAML", "Git", "Kubernetes"],
+      linkText: "GitHub Repo",
+      linkUrl: "https://github.com/Majidullask04/clowarden",
+      liveUrl: "https://clowarden.io",
+      featured: true,
+      highlights: ["Active contribution in the CNCF open source community", "Cloud access policy and documentation improvements"]
+    },
+    {
+      id: "08",
       title: "HomeoCare_2.0",
       category: "Full-Stack & AI",
       description: "Modern healthcare appointment and patient portal application featuring digital consultation booking and responsive frontend deployed on Vercel.",
@@ -327,33 +350,33 @@ From automating multi-stage CI/CD pipelines with SonarQube, Trivy, and Gitleaks 
       highlights: ["Intuitive appointment booking workflow", "Mobile-first responsive UX"]
     },
     {
-      id: "08",
-      title: "clowarden",
-      category: "Open Source & CNCF",
-      description: "CNCF ecosystem open-source project for cross-service resource access management. Participated in maintainer documentation and community review.",
-      tools: ["Go", "CNCF", "LFX", "YAML", "Git", "Kubernetes"],
+      id: "09",
+      title: "ci-cd-automation",
+      category: "DevSecOps & Cloud",
+      description: "Automated 7-stage CI/CD security pipeline running static analysis, secrets audit, and container vulnerabilities before pushing hardened images to Docker Hub.",
+      tools: ["Jenkins", "Docker", "SonarQube", "Trivy", "Gitleaks", "Bash", "Slack Notifications"],
       linkText: "GitHub Repo",
-      linkUrl: "https://github.com/Majidullask04/clowarden",
-      featured: true,
-      highlights: ["Active contribution in the CNCF open source community", "Cloud access policy and documentation improvements"]
+      linkUrl: "https://github.com/Majidullask04/ci-cd-automation",
+      featured: false,
+      architectureSummary: "Hardened Jenkins pipeline template designed for plug-and-play integration into any web or backend repository, enforcing automated security compliance.",
+      highlights: ["Turnkey DevSecOps pipeline template", "Integrated build status alerts"]
     },
     {
-      id: "09",
-      title: "MR-Electrical-works",
-      category: "Full-Stack & AI",
-      description: "Commercial website for electrical contractor services featuring service showcase, inquiry workflow, and production hosting on Vercel.",
-      tools: ["JavaScript", "React", "Vercel", "HTML5", "CSS3"],
+      id: "10",
+      title: "Three-Tier-Applications",
+      category: "Microservices & K8s",
+      description: "Containerized multi-tier full-stack application architecture deployed and managed with Docker and Docker Compose for enhanced scalability, portability, and reliability.",
+      tools: ["JavaScript", "Docker", "Docker Compose", "Node.js", "MongoDB", "Nginx"],
       linkText: "GitHub Repo",
-      linkUrl: "https://github.com/Majidullask04/MR-Electrical-works",
-      liveUrl: "https://mr-electrical-works.vercel.app",
+      linkUrl: "https://github.com/Majidullask04/Three-Tier-Applications",
       featured: false,
-      highlights: ["Business lead generation portal", "Fast loading and SEO optimized"]
+      highlights: ["Multi-tier container architecture", "Docker Compose orchestration"]
     }
   ] as Project[],
   categorizedTechStack: [
     {
       category: "Cloud & Infrastructure",
-      skills: ["AWS EC2", "AWS S3", "AWS IAM", "AWS VPC", "AWS CloudFront", "AWS EKS", "Linux (Ubuntu)", "Bash", "Terraform", "Nginx"]
+      skills: ["AWS EC2", "AWS S3", "AWS IAM", "AWS VPC", "AWS CloudFront", "AWS EKS", "AWS Amplify", "Linux (Ubuntu)", "Bash", "Terraform", "Nginx"]
     },
     {
       category: "Containers & Orchestration",
@@ -376,20 +399,34 @@ From automating multi-stage CI/CD pipelines with SonarQube, Trivy, and Gitleaks 
     github: "https://github.com/Majidullask04",
     linkedin: "https://www.linkedin.com/in/majidulla-sk-1190a2286",
     twitter: "https://x.com/majidulla_sk",
-    email: "majidullask04@gmail.com"
+    email: "majidullask04@gmail.com",
+    phone: "+91 62944 12062",
+    phoneRaw: "6294412062"
   },
   aiKnowledgeBase: [
     {
       keywords: ["who", "about", "introduce", "background", "summary", "elevator pitch"],
       question: "Who is Majidulla SK and what is his background?",
       category: "Overview",
-      answer: "Majidulla SK is an AI Full-Stack Engineer and Cloud DevSecOps Specialist based in Hyderabad, India. He builds production-grade full-stack web applications with React, TypeScript, Node.js, Express, and MongoDB, while integrating AI/ML workflows and automating zero-trust cloud infrastructure on AWS and Kubernetes. He is also an active CNCF / LFX open-source contributor."
+      answer: "Majidulla SK is an AI Full-Stack Engineer and Cloud DevSecOps Specialist based in Hyderabad, India. He builds production-grade full-stack web applications with React, TypeScript, Node.js, Express, and MongoDB, while integrating AI/ML workflows and automating zero-trust cloud infrastructure on AWS and Kubernetes. He has 38+ public repositories on GitHub (@Majidullask04) and is an active CNCF / LFX open-source contributor."
     },
     {
       keywords: ["hire", "why hire", "strengths", "value", "special"],
       question: "Why should a company hire Majidulla SK?",
       category: "Hiring",
       answer: "Majid offers a rare and powerful combination: end-to-end Full-Stack development capabilities paired with deep, hands-on DevSecOps & Cloud Engineering. He doesn't just write frontend/backend code—he architectures the CI/CD pipelines, containerizes microservices, implements security scanning (SonarQube, Trivy, Gitleaks), and orchestrates Kubernetes clusters with GitOps. He saves teams hundreds of hours of deployment overhead and delivers resilient, secure software."
+    },
+    {
+      keywords: ["phone", "call", "whatsapp", "mobile", "number", "tel"],
+      question: "What is Majidulla SK's phone number and WhatsApp?",
+      category: "Contact",
+      answer: "You can reach Majid directly by phone or WhatsApp at **+91 62944 12062** (6294412062) or email him at **majidullask04@gmail.com**."
+    },
+    {
+      keywords: ["student-os", "student os", "amplify", "latest project"],
+      question: "What is the 'student-os' project?",
+      category: "Projects",
+      answer: "'student-os' is Majid's flagship student productivity and academic operating system built with TypeScript, React, and deployed on AWS Amplify (live at https://majid-1.d1kytdzlw5ibag.amplifyapp.com). It provides intelligent scheduling, assignment tracking, and real-time student analytics."
     },
     {
       keywords: ["devsecops", "pipeline", "security", "jenkins", "trivy", "sonarqube", "gitleaks"],
@@ -407,25 +444,13 @@ From automating multi-stage CI/CD pipelines with SonarQube, Trivy, and Gitleaks 
       keywords: ["full-stack", "fullstack", "frontend", "backend", "react", "node", "typescript", "api"],
       question: "What are Majid's Full-Stack and Backend capabilities?",
       category: "Full-Stack",
-      answer: "Majid builds fast, type-safe SPAs with React, TypeScript, and TailwindCSS/Vite. On the backend, he creates scalable RESTful APIs with Node.js/Express and Python/FastAPI, utilizing MongoDB and MySQL for data persistence. He also developed 'career-ops', an AI-powered job search and ATS resume tailoring agent."
+      answer: "Majid builds fast, type-safe SPAs with React, TypeScript, and TailwindCSS/Vite. On the backend, he creates scalable RESTful APIs with Node.js/Express and Python/FastAPI, utilizing MongoDB and MySQL for data persistence. He has shipped projects like student-os, career-ops, and Expense-tracker."
     },
     {
-      keywords: ["ai", "machine learning", "ml", "llm", "gemini", "agents"],
-      question: "What is Majid's experience with AI and Machine Learning?",
-      category: "AI & ML",
-      answer: "Majid integrates LLM APIs (Gemini, OpenAI) into real-world developer tools and web applications like career-ops. He is actively expanding his machine learning track, studying neural network architectures, prompt engineering pipelines, and retrieval-augmented generation (RAG) workflows."
-    },
-    {
-      keywords: ["contact", "email", "reach", "hire", "availability", "salary", "relocation", "location"],
+      keywords: ["contact", "email", "reach", "hire", "availability", "location"],
       question: "How can I contact Majid, and what is his availability?",
       category: "Contact",
-      answer: "Majid is based in Hyderabad, Telangana, India and is available for Full-Time AI Full-Stack, Backend, DevSecOps, and Cloud Engineering roles as well as high-impact internships. You can reach him directly via email at majidullask04@gmail.com, on LinkedIn (majidulla-sk-1190a2286), or on GitHub (@Majidullask04)."
-    },
-    {
-      keywords: ["open source", "cncf", "lfx", "contributions", "community"],
-      question: "What are Majid's Open Source and CNCF contributions?",
-      category: "Open Source",
-      answer: "Majid is an active CNCF contributor through the Linux Foundation (LFX Mentorship), having contributed to projects like CLOWarden and LFX Crowdfunding. He has authored documentation updates, reviewed code, and participated in global open-source community initiatives."
+      answer: "Majid is based in Hyderabad, Telangana, India and is available for Full-Time AI Full-Stack, Backend, DevSecOps, and Cloud Engineering roles as well as high-impact internships. You can call or WhatsApp him at **+91 62944 12062**, email **majidullask04@gmail.com**, connect on LinkedIn (majidulla-sk-1190a2286), or check his 38+ GitHub repos (@Majidullask04)."
     }
   ]
 };

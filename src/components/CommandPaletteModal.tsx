@@ -13,10 +13,8 @@ import {
   Check, 
   Terminal, 
   ArrowRight,
-  Layers,
-  Wrench,
-  Award,
-  Briefcase
+  Phone,
+  MessageSquare
 } from 'lucide-react';
 import { DATA } from '../data';
 import { sound } from './SoundEffects';
@@ -39,7 +37,8 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
   onSelectProject
 }) => {
   const [query, setQuery] = useState('');
-  const [copied, setCopied] = useState(false);
+  const [copiedEmail, setCopiedEmail] = useState(false);
+  const [copiedPhone, setCopiedPhone] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -54,24 +53,33 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
   const handleCopyEmail = () => {
     navigator.clipboard.writeText(DATA.email);
     sound.playSuccess();
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setCopiedEmail(true);
+    setTimeout(() => setCopiedEmail(false), 2000);
+  };
+
+  const handleCopyPhone = () => {
+    navigator.clipboard.writeText(DATA.phoneRaw);
+    sound.playSuccess();
+    setCopiedPhone(true);
+    setTimeout(() => setCopiedPhone(false), 2000);
   };
 
   const navActions = [
     { icon: <Bot size={16} className="text-amber-400" />, title: "Open AI Resume Copilot", shortcut: "AI", action: () => { onClose(); onOpenAI(); } },
     { icon: <FileText size={16} className="text-emerald-400" />, title: "View ATS Resume / Print PDF", shortcut: "PDF", action: () => { onClose(); onOpenResume(); } },
     { icon: <Mail size={16} className="text-cyan-400" />, title: "Contact Majid (Direct / Form)", shortcut: "MSG", action: () => { onClose(); onOpenContact(); } },
-    { icon: <Copy size={16} className="text-neutral-400" />, title: copied ? "Copied majidullask04@gmail.com!" : "Copy Email to Clipboard", shortcut: "COPY", action: handleCopyEmail },
+    { icon: <Phone size={16} className="text-emerald-400" />, title: copiedPhone ? "Copied 6294412062!" : `Copy Phone (${DATA.phone})`, shortcut: "CALL", action: handleCopyPhone },
+    { icon: <Copy size={16} className="text-neutral-400" />, title: copiedEmail ? "Copied majidullask04@gmail.com!" : "Copy Email to Clipboard", shortcut: "EMAIL", action: handleCopyEmail },
     { icon: <Github size={16} className="text-white" />, title: "Visit GitHub (@Majidullask04)", shortcut: "GIT", action: () => window.open(DATA.links.github, "_blank") },
     { icon: <Linkedin size={16} className="text-blue-400" />, title: "Connect on LinkedIn", shortcut: "IN", action: () => window.open(DATA.links.linkedin, "_blank") },
   ];
 
   const sectionLinks = [
     { name: "About Me", href: "#about", desc: "Background, trajectory & core philosophy" },
+    { name: "Live GitHub Telemetry", href: "#github-live", desc: "Real-time repos, commits & activity" },
     { name: "Core Capabilities", href: "#services", desc: "Full-Stack, DevSecOps, K8s, AWS, SRE" },
     { name: "Experience Timeline", href: "#experience", desc: "B.Tech, CNCF Open Source, DevSecOps projects" },
-    { name: "Featured Projects", href: "#work", desc: "11+ microservice pipelines, career-ops, Istio" },
+    { name: "Featured Projects", href: "#work", desc: "student-os, 11+ microservice pipelines, Istio" },
     { name: "Tech Stack & Skills", href: "#skills", desc: "Categorized technologies & tools" },
     { name: "Contact & Status", href: "#contact", desc: "Availability & get in touch" },
   ];
@@ -104,17 +112,17 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -20 }}
             transition={{ type: "spring", damping: 30, stiffness: 400 }}
-            className="relative w-full max-w-2xl bg-neutral-900/95 border border-neutral-800 rounded-2xl shadow-2xl flex flex-col overflow-hidden text-neutral-200 z-10 glass-panel"
+            className="relative w-full max-w-2xl bg-neutral-900/95 border border-neutral-800 rounded-3xl shadow-2xl flex flex-col overflow-hidden text-neutral-200 z-10 glass-panel"
           >
             {/* Search Input Bar */}
-            <div className="flex items-center px-4 py-3.5 border-b border-neutral-800 bg-neutral-950/70">
+            <div className="flex items-center px-4 py-3.5 border-b border-neutral-800 bg-neutral-950/80">
               <Search size={18} className="text-amber-500 shrink-0 mr-3" />
               <input
                 ref={inputRef}
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Type a command, project, or skill (e.g., 'k8s', 'copilot', 'jenkins')..."
+                placeholder="Type a command, project, or skill (e.g., 'student-os', 'phone', 'k8s')..."
                 className="w-full bg-transparent text-sm text-white placeholder-neutral-500 focus:outline-none font-sans"
               />
               {query && (
@@ -131,7 +139,7 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
             </div>
 
             {/* Results Body */}
-            <div className="max-h-[60vh] overflow-y-auto p-3 space-y-4 text-xs font-sans">
+            <div className="max-h-[60vh] overflow-y-auto p-3.5 space-y-4 text-xs font-sans">
               
               {/* Quick Actions */}
               <div>
@@ -148,10 +156,10 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
                           sound.playClick();
                           act.action();
                         }}
-                        className="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-neutral-950/40 hover:bg-neutral-800/80 border border-neutral-800/50 hover:border-amber-500/30 text-neutral-300 hover:text-white transition-all group cursor-pointer text-left"
+                        className="w-full flex items-center justify-between px-3 py-2 rounded-2xl bg-neutral-950/40 hover:bg-neutral-800/80 border border-neutral-800/50 hover:border-amber-500/30 text-neutral-300 hover:text-white transition-all group cursor-pointer text-left"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="p-1.5 rounded-lg bg-neutral-900 border border-neutral-800 group-hover:border-amber-500/40">
+                          <div className="p-1.5 rounded-xl bg-neutral-900 border border-neutral-800 group-hover:border-amber-500/40">
                             {act.icon}
                           </div>
                           <span className="text-xs font-medium">{act.title}</span>
@@ -179,7 +187,7 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
                           sound.playClick();
                           onClose();
                         }}
-                        className="flex flex-col px-3 py-2 rounded-xl bg-neutral-950/30 hover:bg-neutral-800/70 border border-neutral-800/40 hover:border-amber-500/30 text-neutral-300 hover:text-white transition-all group"
+                        className="flex flex-col px-3 py-2 rounded-2xl bg-neutral-950/30 hover:bg-neutral-800/70 border border-neutral-800/40 hover:border-amber-500/30 text-neutral-300 hover:text-white transition-all group"
                       >
                         <div className="flex items-center justify-between">
                           <span className="font-medium text-white group-hover:text-amber-300">{sec.name}</span>
@@ -207,7 +215,7 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
                           onClose();
                           if (onSelectProject) onSelectProject(p.id);
                         }}
-                        className="p-3 rounded-xl bg-neutral-950/50 hover:bg-neutral-800/80 border border-neutral-800/60 hover:border-amber-500/40 cursor-pointer transition-all flex flex-col gap-1"
+                        className="p-3 rounded-2xl bg-neutral-950/50 hover:bg-neutral-800/80 border border-neutral-800/60 hover:border-amber-500/40 cursor-pointer transition-all flex flex-col gap-1"
                       >
                         <div className="flex items-center justify-between">
                           <span className="font-bold text-white text-xs">{p.title}</span>
@@ -230,7 +238,7 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
                     {filteredSkills.map((s, i) => (
                       <span
                         key={i}
-                        className="px-2.5 py-1 rounded-md bg-neutral-900 border border-neutral-800 text-amber-300 font-mono text-[11px]"
+                        className="px-2.5 py-1 rounded-lg bg-neutral-900 border border-neutral-800 text-amber-300 font-mono text-[11px]"
                       >
                         {s}
                       </span>
@@ -244,7 +252,7 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
             {/* Footer */}
             <div className="px-4 py-2.5 bg-neutral-950 border-t border-neutral-800 flex items-center justify-between text-[11px] font-mono text-neutral-500">
               <span>Use <kbd className="text-neutral-400 font-semibold">↑</kbd> <kbd className="text-neutral-400 font-semibold">↓</kbd> to navigate</span>
-              <span className="text-amber-500/80">Majidulla SK • Command Center</span>
+              <span className="text-amber-500/80">Majidulla SK ({DATA.phone})</span>
             </div>
           </motion.div>
         </div>
