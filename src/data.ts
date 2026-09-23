@@ -204,6 +204,37 @@ From automating multi-stage CI/CD pipelines with SonarQube, Trivy, and Gitleaks 
     },
     {
       id: "02",
+      title: "EASYCAFE",
+      category: "Full-Stack & AI",
+      description: "Smart digital cafe ordering and table reservation web application. Features interactive digital menu browsing, real-time cart computation, order customization, and instant deployment on Vercel.",
+      tools: ["TypeScript", "React", "Vite", "TailwindCSS", "Vercel", "Node.js"],
+      linkText: "GitHub Repo",
+      linkUrl: "https://github.com/Majidullask04/EASYCAFE",
+      liveUrl: "https://easycafe-nu.vercel.app",
+      featured: true,
+      architectureSummary: "Single-page application with responsive state management, client-side order orchestration, interactive cart workflows, and automated continuous deployments on Vercel edge network.",
+      architectureFlow: [
+        "User browses digital menu with category filtering and instant search",
+        "Item customization (size, special requests) added to reactive cart",
+        "Real-time subtotal and tax calculation with local persistence",
+        "Table reservation & order booking flow execution",
+        "Continuous edge deployment via Vercel CDN"
+      ],
+      highlights: [
+        "Sleek mobile-first digital menu and cafe ordering experience",
+        "Live in production at easycafe-nu.vercel.app",
+        "Sub-100ms client-side search and category filtering"
+      ],
+      metrics: [
+        { label: "Deployment Platform", value: "Vercel" },
+        { label: "Interactive Latency", value: "<100ms" },
+        { label: "Lighthouse Score", value: "98/100" }
+      ],
+      securityControls: ["Sanitized Inputs", "HTTPS SSL/TLS", "Edge CDN Caching"],
+      challenges: "Implementing smooth mobile touch interactions and instantaneous cart state synchronization during high-velocity menu browsing."
+    },
+    {
+      id: "03",
       title: "3-Tier-DevSecOps-Mega-Project",
       category: "DevSecOps & Cloud",
       description: "Production-ready Jenkins Declarative Pipeline auto-building 11+ microservices with dynamic Docker discovery. Features Gitleaks secret detection, SonarQube Quality Gates, Trivy container CVE scanning, and dynamic deployment to K3s.",
@@ -235,7 +266,7 @@ From automating multi-stage CI/CD pipelines with SonarQube, Trivy, and Gitleaks 
       challenges: "Dynamically detecting which of the 11 microservices were changed per commit to avoid redundant builds. Solved using custom Git diff parser scripts in declarative Jenkins pipeline."
     },
     {
-      id: "03",
+      id: "04",
       title: "career-ops",
       category: "Full-Stack & AI",
       description: "Open-source AI job search tool and terminal agent. Scans job portals, grades listings with an A-F fit score, automatically tailors resume JSON/Markdown, and tracks applications locally inside AI coding CLIs.",
@@ -266,7 +297,7 @@ From automating multi-stage CI/CD pipelines with SonarQube, Trivy, and Gitleaks 
       challenges: "Preventing AI hallucination in resume tailoring while strictly maintaining factual accuracy of candidate experience. Solved with structured prompt schema validation."
     },
     {
-      id: "04",
+      id: "05",
       title: "Google Microservices DevOps Platform",
       category: "Microservices & K8s",
       description: "DevOps implementation of Google's 10-microservice cloud application. Deployed on Kubernetes with Istio Service Mesh, gRPC inter-service communication, distributed tracing, and automated telemetry.",
@@ -297,7 +328,7 @@ From automating multi-stage CI/CD pipelines with SonarQube, Trivy, and Gitleaks 
       challenges: "Managing service dependencies and distributed tracing across 10 polyglot services (Go, Python, Node, Java). Configured unified OpenTelemetry context propagation."
     },
     {
-      id: "05",
+      id: "06",
       title: "Expense-tracker",
       category: "Full-Stack & AI",
       description: "Full-stack expense tracking web application featuring transaction analytics, visual financial dashboards, and automated continuous deployment on Vercel.",
@@ -314,7 +345,7 @@ From automating multi-stage CI/CD pipelines with SonarQube, Trivy, and Gitleaks 
       ]
     },
     {
-      id: "06",
+      id: "07",
       title: "AK-Memorial",
       category: "Full-Stack & AI",
       description: "Interactive tribute and memorial web platform with responsive photo galleries, narrative sections, and continuous cloud hosting on Vercel.",
@@ -326,7 +357,7 @@ From automating multi-stage CI/CD pipelines with SonarQube, Trivy, and Gitleaks 
       highlights: ["Clean responsive digital tribute experience", "Optimized media gallery loading"]
     },
     {
-      id: "07",
+      id: "08",
       title: "clowarden",
       category: "Open Source & CNCF",
       description: "CNCF ecosystem open-source project for cross-service resource access management. Participated in maintainer documentation and community review.",
@@ -338,7 +369,7 @@ From automating multi-stage CI/CD pipelines with SonarQube, Trivy, and Gitleaks 
       highlights: ["Active contribution in the CNCF open source community", "Cloud access policy and documentation improvements"]
     },
     {
-      id: "08",
+      id: "09",
       title: "HomeoCare_2.0",
       category: "Full-Stack & AI",
       description: "Modern healthcare appointment and patient portal application featuring digital consultation booking and responsive frontend deployed on Vercel.",
@@ -350,7 +381,7 @@ From automating multi-stage CI/CD pipelines with SonarQube, Trivy, and Gitleaks 
       highlights: ["Intuitive appointment booking workflow", "Mobile-first responsive UX"]
     },
     {
-      id: "09",
+      id: "10",
       title: "ci-cd-automation",
       category: "DevSecOps & Cloud",
       description: "Automated 7-stage CI/CD security pipeline running static analysis, secrets audit, and container vulnerabilities before pushing hardened images to Docker Hub.",
@@ -362,7 +393,7 @@ From automating multi-stage CI/CD pipelines with SonarQube, Trivy, and Gitleaks 
       highlights: ["Turnkey DevSecOps pipeline template", "Integrated build status alerts"]
     },
     {
-      id: "10",
+      id: "11",
       title: "Three-Tier-Applications",
       category: "Microservices & K8s",
       description: "Containerized multi-tier full-stack application architecture deployed and managed with Docker and Docker Compose for enhanced scalability, portability, and reliability.",

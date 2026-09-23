@@ -93,6 +93,10 @@ export const AICopilotModal: React.FC<AICopilotModalProps> = ({
       return `### 🎓 student-os (Flagship Project)\n\nMajid's latest active project is an academic operating system and intelligent student workspace built with **TypeScript, React, and AWS Amplify**.\n\n- **Live App:** [majid-1.d1kytdzlw5ibag.amplifyapp.com](https://majid-1.d1kytdzlw5ibag.amplifyapp.com)\n- **GitHub:** [github.com/Majidullask04/student-os](https://github.com/Majidullask04/student-os)\n- **Key Features:** Automated scheduling, assignment intelligence, edge CDN distribution on AWS CloudFront.`;
     }
 
+    if (q.includes('easycafe') || q.includes('cafe') || q.includes('coffee') || q.includes('menu') || q.includes('ordering')) {
+      return `### ☕ EASYCAFE (Smart Cafe Platform)\n\nA smart digital cafe ordering and table reservation web application built with **TypeScript, React, and Vite**, deployed on **Vercel**.\n\n- **Live App:** [easycafe-nu.vercel.app](https://easycafe-nu.vercel.app)\n- **GitHub:** [github.com/Majidullask04/EASYCAFE](https://github.com/Majidullask04/EASYCAFE)\n- **Key Features:** Interactive digital menu, real-time cart computation, table booking, and sub-100ms response latency.`;
+    }
+
     if (q.includes('phone') || q.includes('whatsapp') || q.includes('call') || q.includes('number') || q.includes('mobile')) {
       return `### 📞 Direct Contact & Phone\n\nYou can call or WhatsApp Majidulla directly at:\n- **Phone:** **${DATA.phone}** (${DATA.phoneRaw})\n- **Email:** **${DATA.email}**\n- **Location:** Hyderabad, Telangana, India\n\nHe is actively available for Full-Time AI Full-Stack, Backend, DevSecOps, and Cloud Engineering roles.`;
     }
