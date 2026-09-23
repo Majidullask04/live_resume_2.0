@@ -369,7 +369,7 @@ export default function App() {
               sound.playClick();
               setIsResumeOpen(true);
             }}
-            className="flex items-center gap-1.5 text-xs font-mono text-neutral-300 hover:text-white border border-neutral-800 hover:border-amber-500/50 px-3 py-1.5 rounded-xl transition-all bg-neutral-900/60 hover:bg-neutral-800 cursor-pointer"
+            className="premium-btn premium-btn--dark premium-btn--sm flex items-center gap-1.5 text-xs font-mono cursor-pointer"
           >
             <FileText size={13} className="text-amber-400" />
             <span className="hidden sm:inline">Resume</span>
@@ -381,7 +381,7 @@ export default function App() {
               sound.playClick();
               setIsContactOpen(true);
             }}
-            className="flex items-center gap-1.5 text-xs font-mono text-neutral-950 font-bold bg-amber-500 hover:bg-amber-400 px-3.5 py-1.5 rounded-xl transition-all shadow-md shadow-amber-500/20 cursor-pointer active:scale-95"
+            className="premium-btn premium-btn--primary premium-btn--sm flex items-center gap-1.5 text-xs font-mono cursor-pointer"
           >
             <Send size={12} />
             <span>Connect</span>
@@ -464,7 +464,7 @@ export default function App() {
                     sound.playOpenModal();
                     setIsAICopilotOpen(true);
                   }}
-                  className="hero-cta px-5 py-3 rounded-2xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-mono font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-xl shadow-amber-500/20 transition-all cursor-pointer active:scale-95"
+                  className="hero-cta premium-btn premium-btn--primary flex items-center gap-2 font-mono font-bold text-xs uppercase tracking-wider cursor-pointer"
                 >
                   <Bot size={15} />
                   <span>Interview AI Copilot</span>
@@ -473,7 +473,7 @@ export default function App() {
                 <a
                   href={`tel:${DATA.phoneRaw}`}
                   onClick={() => sound.playPop()}
-                  className="hero-cta px-5 py-3 rounded-2xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 font-mono text-xs uppercase tracking-wider border border-emerald-500/40 flex items-center gap-2 transition-all cursor-pointer"
+                  className="hero-cta premium-btn premium-btn--secondary flex items-center gap-2 font-mono text-xs uppercase tracking-wider cursor-pointer"
                 >
                   <Phone size={15} />
                   <span>Direct: {DATA.phone}</span>
@@ -484,7 +484,7 @@ export default function App() {
                     sound.playClick();
                     setIsResumeOpen(true);
                   }}
-                  className="hero-cta px-5 py-3 rounded-2xl bg-neutral-900/80 hover:bg-neutral-800 text-white font-mono text-xs uppercase tracking-wider border border-neutral-800 hover:border-amber-500/50 flex items-center gap-2 transition-all cursor-pointer"
+                  className="hero-cta premium-btn premium-btn--dark flex items-center gap-2 text-white font-mono text-xs uppercase tracking-wider cursor-pointer"
                 >
                   <FileText size={15} className="text-amber-400" />
                   <span>Resume PDF</span>
@@ -1128,7 +1128,7 @@ export default function App() {
                   sound.playOpenModal();
                   setIsContactOpen(true);
                 }}
-                className="inline-flex items-center gap-4 px-8 py-5 rounded-full border border-amber-500/40 hover:border-amber-500 hover:shadow-[0_0_30px_rgba(245,158,11,0.25)] transition-all bg-neutral-900/80 backdrop-blur-sm group cursor-pointer"
+                className="premium-btn premium-btn--primary premium-btn--large inline-flex items-center gap-4 group cursor-pointer"
               >
                 <span className="text-xl md:text-3xl text-white font-medium">{DATA.email}</span>
                 <ArrowUpRight className="text-neutral-500 group-hover:text-amber-500 transition-colors" size={24} />
@@ -1137,7 +1137,7 @@ export default function App() {
               <a 
                 href={`tel:${DATA.phoneRaw}`}
                 onClick={handleCopyPhone}
-                className="inline-flex items-center gap-3 px-6 py-5 rounded-full border border-emerald-500/40 hover:border-emerald-500 hover:shadow-[0_0_30px_rgba(16,185,129,0.25)] transition-all bg-emerald-950/40 backdrop-blur-sm text-emerald-300 group cursor-pointer"
+                className="premium-btn premium-btn--secondary premium-btn--large inline-flex items-center gap-3 text-emerald-300 group cursor-pointer"
                 title="Direct Phone Line / WhatsApp"
               >
                 <Phone size={22} className="text-emerald-400" />
@@ -1146,7 +1146,7 @@ export default function App() {
 
               <button 
                 onClick={handleCopyEmail}
-                className="p-5 rounded-full border border-neutral-800 hover:border-amber-500/50 bg-neutral-900/80 text-neutral-400 hover:text-amber-400 transition-all shadow-md cursor-pointer"
+                className="premium-btn premium-btn--dark premium-btn--icon text-neutral-400 cursor-pointer"
                 title="Copy Email"
               >
                 <Copy size={24} />
