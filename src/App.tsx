@@ -1,7 +1,37 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, useSpring, useMotionValue, useScroll, useTransform, AnimatePresence } from 'motion/react';
-import { ArrowUpRight, Github, Linkedin, Mail, MapPin, Twitter, ChevronDown, ChevronUp, ExternalLink, Copy, Check, Filter } from 'lucide-react';
+import { 
+  ArrowUpRight, 
+  Github, 
+  Linkedin, 
+  Mail, 
+  MapPin, 
+  Twitter, 
+  ChevronDown, 
+  ChevronUp, 
+  ExternalLink, 
+  Copy, 
+  Check, 
+  Filter,
+  Bot,
+  Terminal,
+  FileText,
+  Volume2,
+  VolumeX,
+  Sparkles,
+  Layers,
+  Cpu,
+  ShieldCheck,
+  Send,
+  Zap
+} from 'lucide-react';
 import { DATA, Project } from './data';
+import { AICopilotModal } from './components/AICopilotModal';
+import { ProjectDetailModal } from './components/ProjectDetailModal';
+import { CommandPaletteModal } from './components/CommandPaletteModal';
+import { ContactModal } from './components/ContactModal';
+import { ResumePreviewModal } from './components/ResumePreviewModal';
+import { sound } from './components/SoundEffects';
 
 const CustomCursor = () => {
   const cursorX = useMotionValue(-100);
@@ -37,7 +67,7 @@ const SectionHeader = ({ title, subtitle }: { title: string; subtitle?: string }
     {subtitle && (
       <div className="flex items-center gap-4 mb-3">
         <div className="w-8 h-[1px] bg-amber-500" />
-        <span className="text-amber-500 text-xs font-bold tracking-[0.3em] uppercase">{subtitle}</span>
+        <span className="text-amber-500 text-xs font-mono font-bold tracking-[0.3em] uppercase">{subtitle}</span>
       </div>
     )}
     <motion.h2
@@ -72,7 +102,7 @@ const getTechIcon = (tech: string) => {
   if (t.includes("typescript")) return "devicon-typescript-plain text-[#3178C6]";
   if (t.includes("react")) return "devicon-react-original text-[#61DAFB]";
   if (t.includes("node")) return "devicon-nodejs-plain text-[#339933]";
-  if (t.includes("fastapi")) return "devicon-[#009688]";
+  if (t.includes("fastapi")) return "devicon-fastapi-plain text-[#009688]";
   if (t.includes("go") && !t.includes("gitleaks") && !t.includes("mongo")) return "devicon-go-original-wordmark text-[#00ADD8]";
   if (t.includes("mongo")) return "devicon-mongodb-plain text-[#47A248]";
   if (t.includes("mysql")) return "devicon-mysql-plain text-[#4479A1]";
@@ -86,6 +116,34 @@ export default function App() {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [activeTechCategory, setActiveTechCategory] = useState<number>(0);
   const [copiedEmail, setCopiedEmail] = useState<boolean>(false);
+  const [isSoundMuted, setIsSoundMuted] = useState<boolean>(false);
+
+  // Modal Dialog States
+  const [isAICopilotOpen, setIsAICopilotOpen] = useState<boolean>(false);
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState<boolean>(false);
+  const [isContactOpen, setIsContactOpen] = useState<boolean>(false);
+  const [isResumeOpen, setIsResumeOpen] = useState<boolean>(false);
+  const [selectedProjectForDetail, setSelectedProjectForDetail] = useState<Project | null>(null);
+
+  // Global Keyboard Shortcuts (Cmd+K / Ctrl+K)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        sound.playOpenModal();
+        setIsCommandPaletteOpen(prev => !prev);
+      }
+      if (e.key === 'Escape') {
+        setIsAICopilotOpen(false);
+        setIsCommandPaletteOpen(false);
+        setIsContactOpen(false);
+        setIsResumeOpen(false);
+        setSelectedProjectForDetail(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const experienceRef = useRef<HTMLElement>(null);
   const { scrollYProgress: expScrollY } = useScroll({
@@ -117,8 +175,15 @@ export default function App() {
 
   const handleCopyEmail = () => {
     navigator.clipboard.writeText(DATA.email);
+    sound.playSuccess();
     setCopiedEmail(true);
     setTimeout(() => setCopiedEmail(false), 2500);
+  };
+
+  const toggleSound = () => {
+    sound.enabled = !sound.enabled;
+    setIsSoundMuted(!sound.enabled);
+    if (sound.enabled) sound.playClick();
   };
 
   const projectCategories = ["All", "DevSecOps & Cloud", "Microservices & K8s", "Full-Stack & AI", "Open Source & CNCF"];
@@ -128,17 +193,25 @@ export default function App() {
     return project.category === selectedCategory;
   });
 
+  const handleOpenProjectModal = (projectId: string) => {
+    const proj = DATA.projects.find(p => p.id === projectId);
+    if (proj) {
+      setSelectedProjectForDetail(proj);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-neutral-950 font-sans text-neutral-400 selection:bg-amber-500/30 selection:text-amber-200 cursor-default relative overflow-hidden">
       {/* Background Glow Effects */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute top-[-20%] left-[-10%] w-[45%] h-[45%] rounded-full bg-amber-500/5 blur-[140px]" />
-        <div className="absolute bottom-[-20%] right-[-10%] w-[45%] h-[45%] rounded-full bg-orange-500/5 blur-[140px]" />
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay"></div>
+        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-amber-500/8 blur-[150px]" />
+        <div className="absolute top-[40%] right-[-15%] w-[45%] h-[45%] rounded-full bg-cyan-500/5 blur-[160px]" />
+        <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-orange-500/8 blur-[150px]" />
+        <div className="absolute inset-0 bg-[radial-gradient(#262626_1px,transparent_1px)] [background-size:32px_32px] opacity-25"></div>
       </div>
       
       <CustomCursor />
-      
+
       {/* Floating Toast Notification */}
       <AnimatePresence>
         {copiedEmail && (
@@ -146,69 +219,121 @@ export default function App() {
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.9 }}
-            className="fixed bottom-24 right-6 z-[110] flex items-center gap-2.5 px-4 py-3 bg-amber-500 text-neutral-950 font-medium text-xs rounded-lg shadow-xl shadow-amber-500/20 border border-amber-400"
+            className="fixed bottom-24 right-6 z-[110] flex items-center gap-2.5 px-4 py-3 bg-amber-500 text-neutral-950 font-medium text-xs rounded-xl shadow-xl shadow-amber-500/20 border border-amber-400"
           >
             <Check size={16} />
-            <span>Email copied to clipboard!</span>
+            <span>Email copied to clipboard ({DATA.email})</span>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Floating Resume Button */}
-      <motion.a 
-        href="https://github.com/Majidullask04"
-        target="_blank"
-        rel="noopener noreferrer"
-        initial={{ opacity: 0, x: -50 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.8, delay: 1 }}
-        className="fixed bottom-6 right-6 z-[100] flex items-center gap-3 px-5 py-3 bg-neutral-900/90 backdrop-blur-md border border-neutral-700/60 hover:border-amber-500/60 rounded-full shadow-xl hover:shadow-[0_0_25px_rgba(245,158,11,0.25)] transition-all group"
-      >
-        <span className="relative flex h-2.5 w-2.5">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500"></span>
-        </span>
-        <span className="text-xs font-semibold text-neutral-200 group-hover:text-white transition-colors tracking-wide uppercase">GitHub Profile</span>
-      </motion.a>
+      {/* Floating Action HUD (Bottom-Right & Bottom-Left) */}
+      <div className="fixed bottom-6 right-6 z-[100] flex items-center gap-3">
+        {/* Floating AI Resume Copilot Button */}
+        <motion.button 
+          onClick={() => {
+            sound.playOpenModal();
+            setIsAICopilotOpen(true);
+          }}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, delay: 0.8 }}
+          className="flex items-center gap-2.5 px-4 sm:px-5 py-3 bg-neutral-900/90 hover:bg-amber-500 text-neutral-200 hover:text-neutral-950 backdrop-blur-md border border-amber-500/40 hover:border-amber-400 rounded-full shadow-xl hover:shadow-[0_0_25px_rgba(245,158,11,0.4)] transition-all group cursor-pointer active:scale-95"
+        >
+          <span className="relative flex h-2.5 w-2.5">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500 group-hover:bg-neutral-950"></span>
+          </span>
+          <Bot size={16} className="text-amber-400 group-hover:text-neutral-950" />
+          <span className="text-xs font-mono font-bold tracking-wide uppercase">AI Resume Copilot</span>
+        </motion.button>
+      </div>
+
+      {/* Bottom Left Utility HUD */}
+      <div className="fixed bottom-6 left-6 z-[100] hidden sm:flex items-center gap-2">
+        <button
+          onClick={() => {
+            sound.playClick();
+            setIsCommandPaletteOpen(true);
+          }}
+          className="flex items-center gap-2 px-3.5 py-2 rounded-full bg-neutral-900/80 hover:bg-neutral-800 border border-neutral-800 hover:border-amber-500/40 text-neutral-400 hover:text-white text-xs font-mono backdrop-blur-md shadow-lg transition-all cursor-pointer"
+        >
+          <Terminal size={13} className="text-amber-500" />
+          <span>Cmd + K</span>
+        </button>
+
+        <button
+          onClick={toggleSound}
+          title={isSoundMuted ? "Unmute sound effects" : "Mute sound effects"}
+          className="p-2.5 rounded-full bg-neutral-900/80 hover:bg-neutral-800 border border-neutral-800 text-neutral-400 hover:text-amber-400 backdrop-blur-md transition-all cursor-pointer"
+        >
+          {isSoundMuted ? <VolumeX size={14} /> : <Volume2 size={14} />}
+        </button>
+      </div>
       
       {/* Header Navigation */}
       <motion.nav 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center backdrop-blur-md bg-neutral-950/60 border-b border-neutral-800/40"
+        className="fixed top-0 w-full z-50 px-4 sm:px-8 py-4 flex justify-between items-center backdrop-blur-md bg-neutral-950/70 border-b border-neutral-800/50"
       >
-        <a href="#landing" className="font-display font-bold text-white tracking-tight text-lg hover:text-amber-400 transition-colors">
-          {DATA.name.toUpperCase()}
-        </a>
-        <div className="hidden md:flex space-x-8 text-xs uppercase tracking-widest font-semibold text-neutral-400">
+        <div className="flex items-center gap-4">
+          <a href="#landing" className="font-display font-bold text-white tracking-tight text-lg hover:text-amber-400 transition-colors flex items-center gap-2">
+            <span>{DATA.name.toUpperCase()}</span>
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-400 border border-amber-500/30 hidden sm:inline">
+              2.0 LIVE
+            </span>
+          </a>
+        </div>
+
+        <div className="hidden lg:flex space-x-7 text-xs uppercase tracking-widest font-semibold font-mono text-neutral-400">
           <a href="#about" className="hover:text-amber-400 transition-colors">About</a>
-          <a href="#services" className="hover:text-amber-400 transition-colors">Services</a>
+          <a href="#services" className="hover:text-amber-400 transition-colors">Capabilities</a>
           <a href="#experience" className="hover:text-amber-400 transition-colors">Experience</a>
-          <a href="#work" className="hover:text-amber-400 transition-colors">Portfolio</a>
+          <a href="#work" className="hover:text-amber-400 transition-colors">Projects</a>
           <a href="#skills" className="hover:text-amber-400 transition-colors">Tech Stack</a>
           <a href="#contact" className="hover:text-amber-400 transition-colors">Contact</a>
         </div>
-        <button 
-          onClick={handleCopyEmail} 
-          className="flex items-center gap-2 text-xs font-mono text-neutral-300 hover:text-amber-400 border border-neutral-800 hover:border-amber-500/50 px-3 py-1.5 rounded-md transition-all bg-neutral-900/50"
-        >
-          <Copy size={13} />
-          <span className="hidden sm:inline">Copy Email</span>
-        </button>
+
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* ATS Resume View Trigger */}
+          <button 
+            onClick={() => {
+              sound.playClick();
+              setIsResumeOpen(true);
+            }}
+            className="flex items-center gap-1.5 text-xs font-mono text-neutral-300 hover:text-white border border-neutral-800 hover:border-amber-500/50 px-3 py-1.5 rounded-xl transition-all bg-neutral-900/60 hover:bg-neutral-800 cursor-pointer"
+          >
+            <FileText size={13} className="text-amber-400" />
+            <span className="hidden sm:inline">Resume</span>
+          </button>
+
+          {/* Contact Dialogue Trigger */}
+          <button 
+            onClick={() => {
+              sound.playClick();
+              setIsContactOpen(true);
+            }}
+            className="flex items-center gap-1.5 text-xs font-mono text-neutral-950 font-bold bg-amber-500 hover:bg-amber-400 px-3.5 py-1.5 rounded-xl transition-all shadow-md shadow-amber-500/10 cursor-pointer active:scale-95"
+          >
+            <Send size={12} />
+            <span>Connect</span>
+          </button>
+        </div>
       </motion.nav>
 
       <main className="max-w-5xl mx-auto px-6 pt-32 pb-24 md:pt-48 md:pb-32 flex flex-col gap-32 md:gap-48">
         
         {/* Landing Hero Section */}
-        <section className="relative flex flex-col items-center justify-center min-h-[85vh] pt-10 overflow-visible z-10 w-full" id="landing">
+        <section className="relative flex flex-col items-center justify-center min-h-[85vh] pt-6 overflow-visible z-10 w-full" id="landing">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center z-0 pointer-events-none flex flex-col items-center justify-center overflow-visible">
             <motion.h1 
               style={{ x: nameParallaxX, y: nameParallaxY }}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-              className="text-[14vw] md:text-[11vw] font-display font-bold tracking-tighter leading-none text-neutral-800/80 whitespace-nowrap select-none uppercase"
+              className="text-[14vw] md:text-[11vw] font-display font-bold tracking-tighter leading-none text-neutral-800/70 whitespace-nowrap select-none uppercase"
             >
               {DATA.name}
             </motion.h1>
@@ -219,18 +344,18 @@ export default function App() {
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.2, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="relative z-10 w-full max-w-lg md:max-w-2xl flex justify-center items-end mt-12 md:mt-0"
+            className="relative z-10 w-full max-w-lg md:max-w-2xl flex justify-center items-end mt-8 md:mt-0"
           >
             <motion.img 
               src="/profile.png" 
               alt="Profile" 
-              className="w-full h-auto max-h-[70vh] object-contain object-bottom drop-shadow-[0_0_60px_rgba(245,158,11,0.15)] relative z-10"
+              className="w-full h-auto max-h-[68vh] object-contain object-bottom drop-shadow-[0_0_60px_rgba(245,158,11,0.2)] relative z-10"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.src = "https://ui-avatars.com/api/?name=Majidulla+SK&background=0a0a0a&color=fbbf24&size=512";
               }}
             />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-amber-500/20 blur-[100px] rounded-full z-0 pointer-events-none"></div>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-amber-500/20 blur-[110px] rounded-full z-0 pointer-events-none"></div>
             <div className="absolute bottom-[-2px] left-0 w-full h-32 bg-gradient-to-t from-neutral-950 via-neutral-950/80 to-transparent z-20 pointer-events-none"></div>
           </motion.div>
 
@@ -238,14 +363,41 @@ export default function App() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="relative z-30 mt-[-4rem] md:mt-[-5rem] text-center flex flex-col items-center gap-1"
+            className="relative z-30 mt-[-3.5rem] md:mt-[-4.5rem] text-center flex flex-col items-center gap-2"
           >
-             <p className="text-amber-500 font-serif italic text-lg md:text-2xl tracking-[0.2em] md:tracking-[0.3em] uppercase">
-                Cloud & DevSecOps Platform Specialist
-             </p>
+             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-900/80 border border-amber-500/30 text-amber-400 text-xs font-mono uppercase tracking-widest backdrop-blur-md">
+                <Sparkles size={12} />
+                <span>AI Full-Stack • Cloud • DevSecOps</span>
+             </div>
+             
              <h2 className="text-4xl md:text-6xl lg:text-7xl font-serif text-white tracking-tight leading-none mt-2">
                 {DATA.title}
              </h2>
+
+             {/* Hero Action Buttons */}
+             <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
+                <button
+                  onClick={() => {
+                    sound.playOpenModal();
+                    setIsAICopilotOpen(true);
+                  }}
+                  className="px-5 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-mono font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-amber-500/20 transition-all cursor-pointer active:scale-95"
+                >
+                  <Bot size={15} />
+                  <span>Interview AI Copilot</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    sound.playClick();
+                    setIsResumeOpen(true);
+                  }}
+                  className="px-5 py-3 rounded-xl bg-neutral-900/80 hover:bg-neutral-800 text-white font-mono text-xs uppercase tracking-wider border border-neutral-800 hover:border-amber-500/50 flex items-center gap-2 transition-all cursor-pointer"
+                >
+                  <FileText size={15} className="text-amber-400" />
+                  <span>View Resume PDF</span>
+                </button>
+             </div>
           </motion.div>
         </section>
 
@@ -260,13 +412,13 @@ export default function App() {
             >
               <div className="flex items-center gap-4 mb-8">
                 <div className="w-8 h-[1px] bg-amber-500" />
-                <span className="text-amber-500 text-xs font-bold tracking-[0.3em] uppercase">About Me</span>
+                <span className="text-amber-500 text-xs font-mono font-bold tracking-[0.3em] uppercase">Engineering Trajectory</span>
               </div>
-              <h2 className="text-[3.2rem] md:text-6xl lg:text-[5rem] font-bold text-white tracking-tight leading-[1.05]">
+              <h2 className="text-[3rem] md:text-5xl lg:text-[4.5rem] font-bold text-white tracking-tight leading-[1.08]">
                 I don't just deploy <br />
-                <span className="font-serif italic text-amber-500 font-medium tracking-normal">infrastructure</span>—I build <br />
-                <span className="font-serif italic text-amber-500 font-medium tracking-normal">secure delivery platforms</span> <br />
-                around it.
+                <span className="font-serif italic text-amber-500 font-medium tracking-normal">infrastructure</span>—I engineer <br />
+                <span className="font-serif italic text-amber-500 font-medium tracking-normal">resilient delivery platforms</span> <br />
+                and intelligent software.
               </h2>
             </motion.div>
 
@@ -275,13 +427,13 @@ export default function App() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="lg:col-span-5 flex flex-col justify-center lg:mt-12"
+              className="lg:col-span-5 flex flex-col justify-center lg:mt-8"
             >
-              <div className="text-neutral-400 text-sm md:text-base leading-relaxed mb-10 whitespace-pre-line">
+              <div className="text-neutral-400 text-sm md:text-base leading-relaxed mb-8 whitespace-pre-line">
                 {DATA.about}
               </div>
 
-              <div className="w-full h-px bg-neutral-800/50 mb-8" />
+              <div className="w-full h-px bg-neutral-800/60 mb-8" />
 
               <motion.div 
                 initial="hidden"
@@ -291,7 +443,7 @@ export default function App() {
                   hidden: { opacity: 0 },
                   visible: { opacity: 1, transition: { staggerChildren: 0.12 } }
                 }}
-                className="grid grid-cols-2 gap-6 md:gap-8"
+                className="grid grid-cols-2 gap-4 md:gap-6"
               >
                 {DATA.stats.map((stat, i) => (
                   <motion.div 
@@ -300,10 +452,11 @@ export default function App() {
                       hidden: { opacity: 0, y: 10 },
                       visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
                     }}
-                    className="flex flex-col p-4 bg-neutral-900/40 border border-neutral-800/60 rounded-xl"
+                    className="flex flex-col p-4 bg-neutral-900/40 border border-neutral-800/70 rounded-xl hover:border-amber-500/40 transition-colors"
                   >
-                    <span className="text-2xl md:text-3xl font-bold text-amber-500 mb-1">{stat.value}</span>
-                    <span className="text-neutral-400 uppercase tracking-widest text-[10px] font-semibold leading-snug">{stat.label}</span>
+                    <span className="text-2xl md:text-3xl font-bold font-mono text-amber-400 mb-1">{stat.value}</span>
+                    <span className="text-white text-xs font-semibold leading-snug">{stat.label}</span>
+                    <span className="text-neutral-500 text-[10px] font-mono mt-0.5">{stat.change}</span>
                   </motion.div>
                 ))}
               </motion.div>
@@ -311,16 +464,19 @@ export default function App() {
           </div>
         </section>
 
-        {/* Services / Capabilities */}
+        {/* Capabilities / Services */}
         <section id="services" className="py-12 md:py-20 border-b border-neutral-900">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 relative">
             <div className="lg:col-span-5 h-fit lg:sticky lg:top-36">
-              <span className="text-amber-500 text-xs font-bold tracking-[0.3em] uppercase block mb-4">Core Capabilities</span>
-              <h2 className="text-[4rem] md:text-[6rem] lg:text-[7rem] font-black italic tracking-tighter leading-[0.85]">
+              <span className="text-amber-500 text-xs font-mono font-bold tracking-[0.3em] uppercase block mb-4">Core Capabilities</span>
+              <h2 className="text-[3.5rem] md:text-[5.5rem] lg:text-[6.5rem] font-black italic tracking-tighter leading-[0.88]">
                 <span className="text-white">WHAT</span>
                 <br />
-                <span className="text-amber-500">I DO</span>
+                <span className="text-amber-500">I BUILD</span>
               </h2>
+              <p className="text-xs font-mono text-neutral-500 mt-6 max-w-sm leading-relaxed">
+                Click or hover each capability to inspect full engineering stack and tools.
+              </p>
             </div>
             
             <div className="lg:col-span-7 flex flex-col gap-6">
@@ -334,15 +490,18 @@ export default function App() {
                     viewport={{ once: true }}
                     transition={{ delay: idx * 0.08 }}
                     onMouseEnter={() => setExpandedService(idx)}
-                    onClick={() => setExpandedService(isExpanded ? null : idx)}
-                    className="group relative flex flex-col p-8 md:p-10 border border-dashed border-neutral-700/50 bg-[#0a0a0a]/50 transition-colors hover:border-amber-500/40 cursor-pointer"
+                    onClick={() => {
+                      sound.playClick();
+                      setExpandedService(isExpanded ? null : idx);
+                    }}
+                    className="group relative flex flex-col p-8 md:p-10 border border-dashed border-neutral-700/60 bg-[#0a0a0a]/60 transition-all hover:border-amber-500/50 cursor-pointer rounded-xl"
                   >
                     <div className="absolute top-0 left-0 w-2.5 h-2.5 border-t-[3px] border-l-[3px] border-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.8)] -translate-x-[2px] -translate-y-[2px]" />
                     <div className="absolute top-0 right-0 w-2.5 h-2.5 border-t-[3px] border-r-[3px] border-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.8)] translate-x-[2px] -translate-y-[2px]" />
                     <div className="absolute bottom-0 left-0 w-2.5 h-2.5 border-b-[3px] border-l-[3px] border-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.8)] -translate-x-[2px] translate-y-[2px]" />
                     <div className="absolute bottom-0 right-0 w-2.5 h-2.5 border-b-[3px] border-r-[3px] border-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.8)] translate-x-[2px] translate-y-[2px]" />
                     
-                    <h3 className="text-2xl md:text-3xl font-bold text-white mb-2 tracking-tight group-hover:text-amber-300 transition-colors">{service.title}</h3>
+                    <h3 className="text-2xl md:text-3xl font-bold text-white mb-1.5 tracking-tight group-hover:text-amber-300 transition-colors">{service.title}</h3>
                     <p className="text-neutral-500 text-xs font-mono tracking-widest uppercase mb-4">{service.subtitle}</p>
                     
                     <div className="relative">
@@ -363,10 +522,10 @@ export default function App() {
                               exit={{ opacity: 0, y: -10 }}
                               className="mt-6 pt-4 border-t border-neutral-800/80"
                             >
-                              <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-amber-500 mb-3">Key Technologies</p>
+                              <p className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-amber-500 mb-3">Key Technologies</p>
                               <div className="flex flex-wrap gap-2">
                                 {service.skills.map((skill, i) => (
-                                  <span key={i} className="px-3 py-1 bg-neutral-900 text-neutral-300 rounded-full text-xs font-mono border border-neutral-800">
+                                  <span key={i} className="px-3 py-1 bg-neutral-900 text-neutral-300 rounded-lg text-xs font-mono border border-neutral-800">
                                     {skill}
                                   </span>
                                 ))}
@@ -381,7 +540,7 @@ export default function App() {
                       )}
                     </div>
 
-                    <div className="absolute bottom-8 right-8 w-8 h-8 flex items-center justify-center border border-neutral-700/50 rounded transition-colors group-hover:border-amber-500 text-neutral-500 group-hover:text-white bg-[#0a0a0a]">
+                    <div className="absolute bottom-8 right-8 w-8 h-8 flex items-center justify-center border border-neutral-700/50 rounded-lg transition-colors group-hover:border-amber-500 text-neutral-500 group-hover:text-white bg-[#0a0a0a]">
                       {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                     </div>
                   </motion.div>
@@ -394,7 +553,7 @@ export default function App() {
         {/* Experience Timeline */}
         <section id="experience" ref={experienceRef} className="py-12 md:py-20 border-b border-neutral-900">
           <div className="text-center mb-16">
-            <span className="text-amber-500 text-xs font-bold tracking-[0.3em] uppercase block mb-3">Career Path</span>
+            <span className="text-amber-500 text-xs font-mono font-bold tracking-[0.3em] uppercase block mb-3">Career Path</span>
             <h2 className="text-4xl md:text-6xl font-display font-medium text-white tracking-tight">
               My journey & <br />
               <span className="text-amber-500">experience</span>
@@ -434,9 +593,19 @@ export default function App() {
                   <div className="hidden md:block absolute left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-amber-900 border border-amber-500/50 shadow-[0_0_10px_rgba(245,158,11,0.2)] z-10" />
 
                   <div className="w-full md:w-1/2 pl-0 md:pl-12">
-                    <p className="text-neutral-400 text-sm md:text-base leading-relaxed bg-neutral-900/30 p-5 rounded-lg border border-neutral-800/40">
-                      {exp.description}
-                    </p>
+                    <div className="text-neutral-400 text-sm md:text-base leading-relaxed bg-neutral-900/40 p-5 rounded-xl border border-neutral-800/60 flex flex-col gap-3">
+                      <p>{exp.description}</p>
+                      {exp.highlights && exp.highlights.length > 0 && (
+                        <ul className="space-y-1 pt-2 border-t border-neutral-800/70 text-xs font-mono text-neutral-300">
+                          {exp.highlights.map((h, i) => (
+                            <li key={i} className="flex items-start gap-2">
+                              <span className="text-amber-500">▹</span>
+                              <span>{h}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
                   </div>
                 </motion.div>
               ))}
@@ -468,11 +637,11 @@ export default function App() {
                   visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
                 }}
                 whileHover={{ scale: 1.01 }}
-                className="p-6 md:p-8 rounded-xl border border-neutral-800 bg-neutral-900/40 hover:border-amber-500/40 transition-all flex flex-col justify-between group"
+                className="p-6 md:p-8 rounded-2xl border border-neutral-800 bg-neutral-900/40 hover:border-amber-500/40 transition-all flex flex-col justify-between group"
               >
                 <div>
                   <div className="flex justify-between items-center mb-4">
-                    <span className="text-3xl font-display font-medium text-neutral-700 group-hover:text-amber-500/30 transition-colors">
+                    <span className="text-3xl font-display font-medium text-neutral-700 group-hover:text-amber-500/40 transition-colors">
                       {item.id}
                     </span>
                     <span className="px-3 py-1 text-[10px] uppercase tracking-widest font-mono font-semibold rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30">
@@ -485,8 +654,9 @@ export default function App() {
                     "{item.quote}"
                   </p>
                 </div>
-                <div className="mt-6 pt-4 border-t border-neutral-800/60 text-[10px] font-mono text-neutral-500 uppercase tracking-widest">
-                  Category: {item.meta}
+                <div className="mt-6 pt-4 border-t border-neutral-800/60 text-[10px] font-mono text-neutral-500 uppercase tracking-widest flex items-center justify-between">
+                  <span>Category: {item.meta}</span>
+                  <span className="text-amber-500/80">Verified</span>
                 </div>
               </motion.div>
             ))}
@@ -498,11 +668,11 @@ export default function App() {
           <div className="flex flex-col items-start mb-12">
             <div className="flex items-center gap-4 mb-4">
               <div className="w-12 h-px bg-amber-500" />
-              <span className="text-amber-500 text-xs font-bold tracking-[0.3em] uppercase">Portfolio</span>
+              <span className="text-amber-500 text-xs font-mono font-bold tracking-[0.3em] uppercase">Architecture & Systems</span>
             </div>
             
             <div className="flex w-full flex-col md:flex-row md:items-end justify-between gap-6">
-              <h2 className="text-[3.5rem] md:text-[5.5rem] font-bold tracking-tight text-white leading-[1.05]">
+              <h2 className="text-[3.2rem] md:text-[5.5rem] font-bold tracking-tight text-white leading-[1.05]">
                 Featured <span className="font-serif italic text-amber-500 font-medium tracking-normal">Projects</span> & <br />
                 <span className="font-serif italic text-amber-500 font-medium tracking-normal">Implementations.</span>
               </h2>
@@ -513,12 +683,15 @@ export default function App() {
           </div>
 
           {/* Filter Category Tabs */}
-          <div className="flex flex-wrap gap-2.5 mb-10 pb-4 border-b border-neutral-800/60">
+          <div className="flex flex-wrap gap-2 mb-10 pb-4 border-b border-neutral-800/60">
             {projectCategories.map((cat, i) => (
               <button
                 key={i}
-                onClick={() => setSelectedCategory(cat)}
-                className={`px-4 py-2 rounded-lg text-xs font-mono tracking-wider uppercase transition-all ${
+                onClick={() => {
+                  sound.playClick();
+                  setSelectedCategory(cat);
+                }}
+                className={`px-4 py-2 rounded-xl text-xs font-mono tracking-wider uppercase transition-all cursor-pointer ${
                   selectedCategory === cat
                     ? "bg-amber-500 text-neutral-950 font-bold shadow-lg shadow-amber-500/20"
                     : "bg-neutral-900/60 text-neutral-400 hover:text-white border border-neutral-800 hover:border-neutral-700"
@@ -542,7 +715,7 @@ export default function App() {
             }}
             className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8"
           >
-            {filteredProjects.map((project, idx) => (
+            {filteredProjects.map((project) => (
               <motion.div 
                 layout
                 key={project.id + project.title}
@@ -550,7 +723,7 @@ export default function App() {
                   hidden: { opacity: 0, scale: 0.95, y: 20 },
                   visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.5 } }
                 }}
-                className="group relative flex flex-col p-8 border border-dashed border-neutral-700/50 bg-[#0a0a0a]/50 hover:border-amber-500/40 transition-colors duration-500 overflow-hidden rounded-lg justify-between"
+                className="group relative flex flex-col p-8 border border-dashed border-neutral-700/60 bg-[#0a0a0a]/60 hover:border-amber-500/50 transition-colors duration-500 overflow-hidden rounded-2xl justify-between"
               >
                 <div className="absolute top-0 left-0 w-2.5 h-2.5 border-t-[3px] border-l-[3px] border-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.8)] -translate-x-[2px] -translate-y-[2px]" />
                 <div className="absolute top-0 right-0 w-2.5 h-2.5 border-t-[3px] border-r-[3px] border-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.8)] translate-x-[2px] -translate-y-[2px]" />
@@ -559,8 +732,8 @@ export default function App() {
 
                 <div>
                   <div className="flex justify-between items-start mb-6">
-                    <span className="text-sm font-mono text-amber-500 font-bold">{project.id}</span>
-                    <span className="text-[10px] font-mono uppercase tracking-widest text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded border border-amber-500/20">
+                    <span className="text-sm font-mono text-amber-500 font-bold">#{project.id}</span>
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20">
                       {project.category}
                     </span>
                   </div>
@@ -572,23 +745,49 @@ export default function App() {
                   <p className="text-neutral-400 text-xs md:text-sm leading-relaxed mb-6">
                     {project.description}
                   </p>
+
+                  {/* Highlights if available */}
+                  {project.highlights && project.highlights.length > 0 && (
+                    <div className="mb-6 p-3 bg-neutral-950/60 rounded-xl border border-neutral-800/60 text-xs font-mono text-neutral-300 space-y-1">
+                      {project.highlights.slice(0, 2).map((h, i) => (
+                        <div key={i} className="flex items-start gap-2">
+                          <span className="text-amber-400">▹</span>
+                          <span>{h}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 
                 <div>
                   <div className="flex flex-wrap gap-1.5 mb-6 pt-4 border-t border-neutral-800/60">
                     {project.tools.map((tool, i) => (
-                      <span key={i} className="px-2.5 py-1 bg-neutral-900 text-neutral-300 rounded text-[11px] font-mono border border-neutral-800">
+                      <span key={i} className="px-2.5 py-1 bg-neutral-900 text-neutral-300 rounded-lg text-[11px] font-mono border border-neutral-800">
                         {tool}
                       </span>
                     ))}
                   </div>
 
-                  <div className="flex items-center gap-3 pt-2">
+                  {/* Action Buttons */}
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-2">
+                    {/* Deep-Dive Inspection Dialogue Trigger */}
+                    <button
+                      onClick={() => {
+                        sound.playClick();
+                        setSelectedProjectForDetail(project);
+                      }}
+                      className="px-4 py-2.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 rounded-xl text-xs font-mono uppercase tracking-wider border border-amber-500/30 flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                    >
+                      <Layers size={13} />
+                      <span>Inspect Architecture</span>
+                    </button>
+
                     <a
                       href={project.linkUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 bg-neutral-900 hover:bg-neutral-800 text-white rounded text-xs font-mono uppercase tracking-wider border border-neutral-800 hover:border-amber-500/40 transition-all"
+                      onClick={() => sound.playPop()}
+                      className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-neutral-900 hover:bg-neutral-800 text-white rounded-xl text-xs font-mono uppercase tracking-wider border border-neutral-800 hover:border-amber-500/40 transition-all"
                     >
                       <Github size={14} />
                       <span>{project.linkText}</span>
@@ -599,10 +798,11 @@ export default function App() {
                         href={project.liveUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-1.5 px-4 py-2 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 rounded text-xs font-mono uppercase tracking-wider border border-amber-500/30 transition-all"
+                        onClick={() => sound.playPop()}
+                        className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-neutral-950 font-bold rounded-xl text-xs font-mono uppercase tracking-wider transition-all shadow-sm"
                       >
                         <ExternalLink size={14} />
-                        <span>Live App</span>
+                        <span>Live</span>
                       </a>
                     )}
                   </div>
@@ -617,7 +817,7 @@ export default function App() {
           <div className="flex flex-col items-center mb-12 text-center">
             <div className="flex items-center gap-4 mb-4">
               <div className="w-8 h-px bg-amber-500" />
-              <span className="text-amber-500 text-xs font-bold tracking-[0.3em] uppercase">Expertise</span>
+              <span className="text-amber-500 text-xs font-mono font-bold tracking-[0.3em] uppercase">Core Tech Stack</span>
               <div className="w-8 h-px bg-amber-500" />
             </div>
             
@@ -627,14 +827,17 @@ export default function App() {
           </div>
 
           {/* Categorized Tech Stack Tabs */}
-          <div className="flex justify-center gap-2 mb-10 overflow-x-auto pb-2">
+          <div className="flex justify-center gap-2 mb-10 overflow-x-auto pb-2 no-scrollbar">
             {DATA.categorizedTechStack.map((group, idx) => (
               <button
                 key={idx}
-                onClick={() => setActiveTechCategory(idx)}
-                className={`px-4 py-2 rounded-lg text-xs font-mono tracking-wider uppercase transition-all shrink-0 ${
+                onClick={() => {
+                  sound.playClick();
+                  setActiveTechCategory(idx);
+                }}
+                className={`px-4 py-2 rounded-xl text-xs font-mono tracking-wider uppercase transition-all shrink-0 cursor-pointer ${
                   activeTechCategory === idx
-                    ? "bg-amber-500 text-neutral-950 font-bold"
+                    ? "bg-amber-500 text-neutral-950 font-bold shadow-lg shadow-amber-500/20"
                     : "bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-800"
                 }`}
               >
@@ -654,7 +857,7 @@ export default function App() {
               <motion.span 
                 key={i}
                 whileHover={{ scale: 1.05, y: -2 }}
-                className="flex items-center gap-2.5 px-4 py-2.5 bg-neutral-900 border border-neutral-800 rounded-lg text-sm font-mono font-medium text-neutral-200 hover:text-white hover:border-amber-500/40 transition-all hover:shadow-[0_0_15px_rgba(245,158,11,0.15)]"
+                className="flex items-center gap-2.5 px-4 py-3 bg-neutral-900/90 border border-neutral-800 rounded-xl text-sm font-mono font-medium text-neutral-200 hover:text-white hover:border-amber-500/50 transition-all hover:shadow-[0_0_20px_rgba(245,158,11,0.2)] cursor-default"
               >
                 {getTechIcon(tech) ? (
                   <i className={`text-lg ${getTechIcon(tech)}`}></i>
@@ -669,7 +872,7 @@ export default function App() {
 
       </main>
 
-      {/* Footer & Contact Section ("Tail") */}
+      {/* Footer & Contact Section */}
       <footer 
         id="contact" 
         className="relative pt-24 pb-16 px-6 overflow-hidden border-t border-neutral-900 bg-neutral-950"
@@ -701,7 +904,7 @@ export default function App() {
           <div className="flex flex-col items-start mb-16">
             <div className="flex items-center gap-4 mb-8">
               <div className="w-12 h-px bg-amber-500" />
-              <span className="text-amber-500 text-xs font-bold tracking-[0.3em] uppercase">Get In Touch</span>
+              <span className="text-amber-500 text-xs font-mono font-bold tracking-[0.3em] uppercase">Initiate Contact</span>
             </div>
             
             <h2 className="text-[3.5rem] md:text-[5.5rem] font-bold tracking-tight text-white leading-[1.05] mb-10">
@@ -710,17 +913,20 @@ export default function App() {
             </h2>
             
             <div className="flex flex-wrap items-center gap-4">
-              <a 
-                href={`mailto:${DATA.email}`} 
-                className="inline-flex items-center gap-4 px-8 py-5 rounded-full border border-amber-500/40 hover:border-amber-500 hover:shadow-[0_0_30px_rgba(245,158,11,0.25)] transition-all bg-neutral-900/80 backdrop-blur-sm group"
+              <button 
+                onClick={() => {
+                  sound.playOpenModal();
+                  setIsContactOpen(true);
+                }}
+                className="inline-flex items-center gap-4 px-8 py-5 rounded-full border border-amber-500/40 hover:border-amber-500 hover:shadow-[0_0_30px_rgba(245,158,11,0.25)] transition-all bg-neutral-900/80 backdrop-blur-sm group cursor-pointer"
               >
                 <span className="text-xl md:text-3xl text-white font-medium">{DATA.email}</span>
                 <ArrowUpRight className="text-neutral-500 group-hover:text-amber-500 transition-colors" size={24} />
-              </a>
+              </button>
 
               <button 
                 onClick={handleCopyEmail}
-                className="p-5 rounded-full border border-neutral-800 hover:border-amber-500/50 bg-neutral-900/80 text-neutral-400 hover:text-amber-400 transition-all shadow-md"
+                className="p-5 rounded-full border border-neutral-800 hover:border-amber-500/50 bg-neutral-900/80 text-neutral-400 hover:text-amber-400 transition-all shadow-md cursor-pointer"
                 title="Copy Email"
               >
                 <Copy size={24} />
@@ -729,7 +935,7 @@ export default function App() {
           </div>
 
           {/* Grid Metadata Row */}
-          <div className="border-y border-neutral-800/60 py-8 mb-12 bg-neutral-900/30 backdrop-blur-md rounded-xl px-6 md:px-8 border border-neutral-800/40">
+          <div className="border-y border-neutral-800/60 py-8 mb-12 bg-neutral-900/30 backdrop-blur-md rounded-2xl px-6 md:px-8 border border-neutral-800/40">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
               <div className="flex flex-col gap-2">
                 <span className="text-[10px] tracking-[0.2em] uppercase text-neutral-500 font-mono font-bold">Status</span>
@@ -771,13 +977,13 @@ export default function App() {
                 About <ArrowUpRight size={12} className="text-neutral-600" />
               </a>
               <a href="#services" className="text-neutral-400 hover:text-amber-400 transition-colors text-xs font-mono flex items-center justify-between w-28 py-1 border-b border-neutral-900 hover:border-neutral-700">
-                Services <ArrowUpRight size={12} className="text-neutral-600" />
+                Capabilities <ArrowUpRight size={12} className="text-neutral-600" />
               </a>
               <a href="#experience" className="text-neutral-400 hover:text-amber-400 transition-colors text-xs font-mono flex items-center justify-between w-28 py-1 border-b border-neutral-900 hover:border-neutral-700">
                 Experience <ArrowUpRight size={12} className="text-neutral-600" />
               </a>
               <a href="#work" className="text-neutral-400 hover:text-amber-400 transition-colors text-xs font-mono flex items-center justify-between w-28 py-1 border-b border-neutral-900 hover:border-neutral-700">
-                Portfolio <ArrowUpRight size={12} className="text-neutral-600" />
+                Projects <ArrowUpRight size={12} className="text-neutral-600" />
               </a>
               <a href="#skills" className="text-neutral-400 hover:text-amber-400 transition-colors text-xs font-mono flex items-center justify-between w-28 py-1 border-b border-neutral-900 hover:border-neutral-700">
                 Tech Stack <ArrowUpRight size={12} className="text-neutral-600" />
@@ -802,7 +1008,7 @@ export default function App() {
           {/* Copyright & Scroll to Top Bar */}
           <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-6 text-[10px] tracking-[0.2em] font-mono text-neutral-500 uppercase">
             <div>
-              &copy; {new Date().getFullYear()} {DATA.name} • DESIGNED & BUILT SOLO
+              &copy; {new Date().getFullYear()} {DATA.name} • LIVE RESUME 2.0
             </div>
             <div className="flex items-center gap-8">
               <button 
@@ -816,6 +1022,42 @@ export default function App() {
 
         </div>
       </footer>
+
+      {/* Interactive Modals */}
+      <AICopilotModal
+        isOpen={isAICopilotOpen}
+        onClose={() => setIsAICopilotOpen(false)}
+        onOpenContact={() => {
+          setIsAICopilotOpen(false);
+          setIsContactOpen(true);
+        }}
+        onOpenProject={handleOpenProjectModal}
+      />
+
+      <ProjectDetailModal
+        project={selectedProjectForDetail}
+        isOpen={!!selectedProjectForDetail}
+        onClose={() => setSelectedProjectForDetail(null)}
+      />
+
+      <CommandPaletteModal
+        isOpen={isCommandPaletteOpen}
+        onClose={() => setIsCommandPaletteOpen(false)}
+        onOpenAI={() => setIsAICopilotOpen(true)}
+        onOpenResume={() => setIsResumeOpen(true)}
+        onOpenContact={() => setIsContactOpen(true)}
+        onSelectProject={handleOpenProjectModal}
+      />
+
+      <ContactModal
+        isOpen={isContactOpen}
+        onClose={() => setIsContactOpen(false)}
+      />
+
+      <ResumePreviewModal
+        isOpen={isResumeOpen}
+        onClose={() => setIsResumeOpen(false)}
+      />
     </div>
   );
 }

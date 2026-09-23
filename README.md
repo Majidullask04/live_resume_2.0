@@ -1,42 +1,55 @@
-# Majidulla SK | DevOps & Cloud Engineer
+# Majidulla SK | Live Interactive Resume 2.0 ⚡
 
-Welcome to the repository for my interactive live resume! This project showcases my skills, experience, and projects in a dynamic, AI-powered web format.
+Welcome to the interactive live resume repository for **Majidulla SK** — **AI Full-Stack Engineer & Cloud DevSecOps Specialist**.
 
-## 👨‍💻 About Me
-
-I am a passionate DevOps & Cloud Engineer with expertise in building scalable, secure, and highly available infrastructure. I enjoy automating workflows, optimizing cloud architectures, and bridging the gap between development and operations to ensure seamless software delivery.
-
-## 🛠️ Core Skills
-
-- **Cloud Platforms:** AWS, Google Cloud Platform (GCP), Azure
-- **Infrastructure as Code (IaC):** Terraform, CloudFormation
-- **Containers & Orchestration:** Docker, Kubernetes (K8s), ECS
-- **CI/CD & Automation:** GitHub Actions, Jenkins, GitLab CI, ArgoCD
-- **Scripting & Programming:** Python, Bash, Go, Node.js
-- **Monitoring & Logging:** Prometheus, Grafana, ELK Stack, Datadog
-
-## 🚀 About This Project
-
-This repository contains the source code for my interactive portfolio and live resume. It is built using a modern frontend stack to provide a fast, responsive, and engaging user experience.
-
-- **Framework:** React + Vite
-- **Language:** TypeScript
-- **AI Integration:** Powered by Gemini AI for interactive and smart resume features
-
-## 🔗 Connect with Me
-
-- **Portfolio:** [Insert Link Here]
-- **LinkedIn:** [Insert LinkedIn Profile]
-- **GitHub:** [https://github.com/Majidullask04](https://github.com/Majidullask04)
-- **Email:** [Insert Email Address]
+This next-generation portfolio showcases engineering projects, zero-trust DevSecOps architectures, cloud infrastructure, and full-stack capabilities with dynamic interactive dialogues.
 
 ---
 
-### Local Development
+## 🌟 Interactive Features & Dialogues
 
-*If you are interested in exploring the source code or running this project locally:*
+- 🤖 **AI Resume Copilot & Recruiter Chat Dialogue:** Live candidate intelligence copilot answering questions about tech stack, pipelines, architecture decisions, and availability.
+- 🏗️ **System Architecture Inspection Dialogue:** Deep-dive modal for each project with step-by-step pipeline flows, security controls (Gitleaks, SonarQube, Trivy), and performance metrics.
+- ⌨️ **`Cmd+K` / `Ctrl+K` Command Palette:** Instant developer HUD for section navigation, skill lookup, and quick triggers.
+- ✉️ **Interactive Contact & Proposal Dialogue:** Role purpose selector, live email draft composer, and direct connection channels.
+- 📄 **ATS Resume Viewer & Export:** Clean single-column ATS formatted preview with direct PDF printing and Markdown clipboard export.
+- 🔊 **Synthesized Web Audio Feedback:** Minimalist, zero-external-dependency audio feedback for tactile UI interactions.
 
-1. Clone the repository
-2. Install dependencies: `npm install`
-3. Set your `GEMINI_API_KEY` in `.env.local` (if using AI features)
-4. Start the development server: `npm run dev`
+---
+
+## 🛠️ Technical Stack & Expertise
+
+- **Full-Stack & AI:** React, TypeScript, Node.js, Express, FastAPI, Python, MongoDB, Gemini AI API, TailwindCSS
+- **CI/CD & DevSecOps:** Jenkins Declarative Pipelines, GitHub Actions, SonarQube Quality Gates, Trivy CVE Scanning, Gitleaks, Argo CD GitOps
+- **Cloud & Orchestration:** AWS (EC2, S3, IAM, VPC, EKS), Kubernetes (K3s & EKS), Docker, Helm, Istio Service Mesh (mTLS), gRPC
+- **Observability & SRE:** Prometheus, Grafana, Loki, Distributed Tracing
+
+---
+
+## 🚀 Local Development
+
+```bash
+# Clone the repository
+git clone https://github.com/Majidullask04/live_resume_2.0.git
+
+# Navigate to directory
+cd live_resume_2.0
+
+# Install dependencies
+npm install
+
+# Start local development server
+npm run dev
+
+# Build for production
+npm run build
+```
+
+---
+
+## 🔗 Connect with Majidulla SK
+
+- **Email:** [majidullask04@gmail.com](mailto:majidullask04@gmail.com)
+- **GitHub:** [https://github.com/Majidullask04](https://github.com/Majidullask04)
+- **LinkedIn:** [https://www.linkedin.com/in/majidulla-sk-1190a2286](https://www.linkedin.com/in/majidulla-sk-1190a2286)
+- **X / Twitter:** [https://x.com/majidulla_sk](https://x.com/majidulla_sk)
