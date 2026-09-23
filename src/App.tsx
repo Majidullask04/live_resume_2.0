@@ -145,6 +145,8 @@ export default function App() {
   const [isResumeOpen, setIsResumeOpen] = useState<boolean>(false);
   const [selectedProjectForDetail, setSelectedProjectForDetail] = useState<Project | null>(null);
 
+  const { scrollYProgress } = useScroll();
+
   // Global Keyboard Shortcuts (Cmd+K / Ctrl+K)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -229,11 +231,15 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-neutral-950 font-sans text-neutral-400 selection:bg-amber-500/30 selection:text-amber-200 cursor-default relative overflow-hidden">
+      <motion.div
+        className="fixed left-0 right-0 top-0 z-[120] h-0.5 origin-left bg-gradient-to-r from-amber-400 via-orange-400 to-cyan-400 shadow-[0_0_14px_rgba(245,158,11,0.75)]"
+        style={{ scaleX: scrollYProgress }}
+      />
       {/* Background Glow Effects & Subtle Cyber Pattern */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-amber-500/10 blur-[150px]" />
-        <div className="absolute top-[40%] right-[-15%] w-[45%] h-[45%] rounded-full bg-cyan-500/8 blur-[160px]" />
-        <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-orange-500/10 blur-[150px]" />
+        <motion.div animate={{ x: [0, 35, 0], y: [0, -25, 0], scale: [1, 1.08, 1] }} transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }} className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-amber-500/10 blur-[150px]" />
+        <motion.div animate={{ x: [0, -45, 0], y: [0, 30, 0], scale: [1, 0.94, 1] }} transition={{ duration: 22, repeat: Infinity, ease: "easeInOut", delay: 2 }} className="absolute top-[40%] right-[-15%] w-[45%] h-[45%] rounded-full bg-cyan-500/8 blur-[160px]" />
+        <motion.div animate={{ x: [0, -25, 0], y: [0, -35, 0] }} transition={{ duration: 16, repeat: Infinity, ease: "easeInOut", delay: 1 }} className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-orange-500/10 blur-[150px]" />
         <div className="absolute inset-0 bg-[radial-gradient(#262626_1px,transparent_1px)] [background-size:32px_32px] opacity-25"></div>
       </div>
       
@@ -383,7 +389,12 @@ export default function App() {
         </div>
       </motion.nav>
 
-      <main className="max-w-5xl mx-auto px-6 pt-32 pb-24 md:pt-48 md:pb-32 flex flex-col gap-28 md:gap-40">
+      <motion.main
+        initial="hidden"
+        animate="visible"
+        variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }}
+        className="max-w-5xl mx-auto px-6 pt-32 pb-24 md:pt-48 md:pb-32 flex flex-col gap-28 md:gap-40"
+      >
         
         {/* Landing Hero Section */}
         <section className="relative flex flex-col items-center justify-center min-h-[85vh] pt-6 overflow-visible z-10 w-full" id="landing">
@@ -397,6 +408,18 @@ export default function App() {
             >
               {DATA.name}
             </motion.h1>
+            <motion.div
+              aria-hidden="true"
+              className="hero-orbit hero-orbit-one"
+              animate={{ rotate: 360 }}
+              transition={{ duration: 28, repeat: Infinity, ease: "linear" }}
+            />
+            <motion.div
+              aria-hidden="true"
+              className="hero-orbit hero-orbit-two"
+              animate={{ rotate: -360 }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            />
           </div>
           
           <motion.div 
@@ -425,23 +448,23 @@ export default function App() {
             transition={{ duration: 0.8, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="relative z-30 mt-[-3.5rem] md:mt-[-4.5rem] text-center flex flex-col items-center gap-2"
           >
-             <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-neutral-900/90 border border-amber-500/30 text-amber-400 text-xs font-mono uppercase tracking-widest backdrop-blur-md shadow-lg">
+             <motion.div whileHover={{ scale: 1.04, y: -2 }} className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-neutral-900/90 border border-amber-500/30 text-amber-400 text-xs font-mono uppercase tracking-widest backdrop-blur-md shadow-lg">
                 <Sparkles size={12} />
                 <span>AI Full-Stack • Cloud Infrastructure • DevSecOps</span>
-             </div>
+             </motion.div>
              
              <h2 className="text-4xl md:text-6xl lg:text-7xl font-serif text-white tracking-tight leading-none mt-2">
                 {DATA.title}
              </h2>
 
              {/* Hero Action Buttons & Direct Channels */}
-             <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
+             <motion.div initial="hidden" animate="visible" variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.1, delayChildren: 0.85 } } }} className="flex flex-wrap items-center justify-center gap-3 mt-6">
                 <button
                   onClick={() => {
                     sound.playOpenModal();
                     setIsAICopilotOpen(true);
                   }}
-                  className="px-5 py-3 rounded-2xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-mono font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-xl shadow-amber-500/20 transition-all cursor-pointer active:scale-95"
+                  className="hero-cta px-5 py-3 rounded-2xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-mono font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-xl shadow-amber-500/20 transition-all cursor-pointer active:scale-95"
                 >
                   <Bot size={15} />
                   <span>Interview AI Copilot</span>
@@ -450,7 +473,7 @@ export default function App() {
                 <a
                   href={`tel:${DATA.phoneRaw}`}
                   onClick={() => sound.playPop()}
-                  className="px-5 py-3 rounded-2xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 font-mono text-xs uppercase tracking-wider border border-emerald-500/40 flex items-center gap-2 transition-all cursor-pointer"
+                  className="hero-cta px-5 py-3 rounded-2xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 font-mono text-xs uppercase tracking-wider border border-emerald-500/40 flex items-center gap-2 transition-all cursor-pointer"
                 >
                   <Phone size={15} />
                   <span>Direct: {DATA.phone}</span>
@@ -461,12 +484,12 @@ export default function App() {
                     sound.playClick();
                     setIsResumeOpen(true);
                   }}
-                  className="px-5 py-3 rounded-2xl bg-neutral-900/80 hover:bg-neutral-800 text-white font-mono text-xs uppercase tracking-wider border border-neutral-800 hover:border-amber-500/50 flex items-center gap-2 transition-all cursor-pointer"
+                  className="hero-cta px-5 py-3 rounded-2xl bg-neutral-900/80 hover:bg-neutral-800 text-white font-mono text-xs uppercase tracking-wider border border-neutral-800 hover:border-amber-500/50 flex items-center gap-2 transition-all cursor-pointer"
                 >
                   <FileText size={15} className="text-amber-400" />
                   <span>Resume PDF</span>
                 </button>
-             </div>
+             </motion.div>
           </motion.div>
         </section>
 
@@ -1056,7 +1079,7 @@ export default function App() {
           </AnimatePresence>
         </section>
 
-      </main>
+      </motion.main>
 
       {/* Footer & Contact Section */}
       <footer 
