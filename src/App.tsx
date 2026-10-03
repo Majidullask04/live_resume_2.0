@@ -39,36 +39,8 @@ import { CommandPaletteModal } from './components/CommandPaletteModal';
 import { ContactModal } from './components/ContactModal';
 import { ResumePreviewModal } from './components/ResumePreviewModal';
 import { LiveGitHubTracker } from './components/LiveGitHubTracker';
+import { PatchrightCursorTracker } from './components/PatchrightCursorTracker';
 import { sound } from './components/SoundEffects';
-
-const CustomCursor = () => {
-  const cursorX = useMotionValue(-100);
-  const cursorY = useMotionValue(-100);
-  const springConfig = { damping: 25, stiffness: 700, mass: 0.1 };
-  const cursorXSpring = useSpring(cursorX, springConfig);
-  const cursorYSpring = useSpring(cursorY, springConfig);
-
-  useEffect(() => {
-    const moveCursor = (e: MouseEvent) => {
-      cursorX.set(e.clientX - 8);
-      cursorY.set(e.clientY - 8);
-    };
-    window.addEventListener('mousemove', moveCursor);
-    return () => {
-      window.removeEventListener('mousemove', moveCursor);
-    };
-  }, [cursorX, cursorY]);
-
-  return (
-    <motion.div
-      className="hidden md:flex fixed top-0 left-0 w-4 h-4 rounded-full bg-amber-500 pointer-events-none z-[100] shadow-[0_0_20px_rgba(245,158,11,0.8)]"
-      style={{
-        x: cursorXSpring,
-        y: cursorYSpring,
-      }}
-    />
-  );
-};
 
 const SectionHeader = ({ title, subtitle }: { title: string; subtitle?: string }) => (
   <div className="mb-12 md:mb-16 overflow-hidden">
@@ -243,7 +215,7 @@ export default function App() {
         <div className="absolute inset-0 bg-[radial-gradient(#262626_1px,transparent_1px)] [background-size:32px_32px] opacity-25"></div>
       </div>
       
-      <CustomCursor />
+      <PatchrightCursorTracker />
 
       {/* Floating Toast Notification */}
       <AnimatePresence>
@@ -275,6 +247,9 @@ export default function App() {
       <div className="fixed bottom-6 right-6 z-[100] flex items-center gap-3">
         {/* Floating AI Resume Copilot Button */}
         <motion.button 
+          id="floating-ai-copilot"
+          data-important="true"
+          data-important-title="AI Resume Copilot"
           onClick={() => {
             sound.playOpenModal();
             setIsAICopilotOpen(true);
@@ -282,7 +257,7 @@ export default function App() {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, delay: 0.8 }}
-          className="flex items-center gap-2.5 px-4 sm:px-5 py-3.5 bg-neutral-900/90 hover:bg-amber-500 text-neutral-200 hover:text-neutral-950 backdrop-blur-md border border-amber-500/40 hover:border-amber-400 rounded-full shadow-2xl hover:shadow-[0_0_30px_rgba(245,158,11,0.4)] transition-all group cursor-pointer active:scale-95"
+          className="important-asset flex items-center gap-2.5 px-4 sm:px-5 py-3.5 bg-neutral-900/90 hover:bg-amber-500 text-neutral-200 hover:text-neutral-950 backdrop-blur-md border border-amber-500/40 hover:border-amber-400 rounded-full shadow-2xl hover:shadow-[0_0_30px_rgba(245,158,11,0.4)] transition-all group cursor-pointer active:scale-95"
         >
           <span className="relative flex h-2.5 w-2.5">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
@@ -365,11 +340,14 @@ export default function App() {
 
           {/* ATS Resume View Trigger */}
           <button 
+            id="nav-resume"
+            data-important="true"
+            data-important-title="ATS Resume PDF"
             onClick={() => {
               sound.playClick();
               setIsResumeOpen(true);
             }}
-            className="premium-btn premium-btn--dark premium-btn--sm flex items-center gap-1.5 text-xs font-mono cursor-pointer"
+            className="important-asset premium-btn premium-btn--dark premium-btn--sm flex items-center gap-1.5 text-xs font-mono cursor-pointer"
           >
             <FileText size={13} className="text-amber-400" />
             <span className="hidden sm:inline">Resume</span>
@@ -377,11 +355,14 @@ export default function App() {
 
           {/* Contact Dialogue Trigger */}
           <button 
+            id="nav-connect"
+            data-important="true"
+            data-important-title="Connect / Hire"
             onClick={() => {
               sound.playClick();
               setIsContactOpen(true);
             }}
-            className="premium-btn premium-btn--primary premium-btn--sm flex items-center gap-1.5 text-xs font-mono cursor-pointer"
+            className="important-asset premium-btn premium-btn--primary premium-btn--sm flex items-center gap-1.5 text-xs font-mono cursor-pointer"
           >
             <Send size={12} />
             <span>Connect</span>
@@ -460,31 +441,40 @@ export default function App() {
              {/* Hero Action Buttons & Direct Channels */}
              <motion.div initial="hidden" animate="visible" variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.1, delayChildren: 0.85 } } }} className="flex flex-wrap items-center justify-center gap-3 mt-6">
                 <button
+                  id="hero-ai-copilot"
+                  data-important="true"
+                  data-important-title="Interview AI Copilot"
                   onClick={() => {
                     sound.playOpenModal();
                     setIsAICopilotOpen(true);
                   }}
-                  className="hero-cta premium-btn premium-btn--primary flex items-center gap-2 font-mono font-bold text-xs uppercase tracking-wider cursor-pointer"
+                  className="hero-cta premium-btn premium-btn--primary important-asset flex items-center gap-2 font-mono font-bold text-xs uppercase tracking-wider cursor-pointer"
                 >
                   <Bot size={15} />
                   <span>Interview AI Copilot</span>
                 </button>
 
                 <a
+                  id="hero-phone"
+                  data-important="true"
+                  data-important-title="Direct Phone Line"
                   href={`tel:${DATA.phoneRaw}`}
                   onClick={() => sound.playPop()}
-                  className="hero-cta premium-btn premium-btn--secondary flex items-center gap-2 font-mono text-xs uppercase tracking-wider cursor-pointer"
+                  className="hero-cta premium-btn premium-btn--secondary important-asset flex items-center gap-2 font-mono text-xs uppercase tracking-wider cursor-pointer"
                 >
                   <Phone size={15} />
                   <span>Direct: {DATA.phone}</span>
                 </a>
 
                 <button
+                  id="hero-resume"
+                  data-important="true"
+                  data-important-title="Resume PDF"
                   onClick={() => {
                     sound.playClick();
                     setIsResumeOpen(true);
                   }}
-                  className="hero-cta premium-btn premium-btn--dark flex items-center gap-2 text-white font-mono text-xs uppercase tracking-wider cursor-pointer"
+                  className="hero-cta premium-btn premium-btn--dark important-asset flex items-center gap-2 text-white font-mono text-xs uppercase tracking-wider cursor-pointer"
                 >
                   <FileText size={15} className="text-amber-400" />
                   <span>Resume PDF</span>
@@ -494,7 +484,12 @@ export default function App() {
         </section>
 
         {/* Live GitHub Telemetry Section */}
-        <section id="github-live" className="py-2">
+        <section 
+          id="github-live" 
+          data-important="true" 
+          data-important-title="Live GitHub Telemetry" 
+          className="py-2 important-asset"
+        >
           <LiveGitHubTracker />
         </section>
 
@@ -816,11 +811,17 @@ export default function App() {
               <motion.div 
                 layout
                 key={project.id + project.title}
+                id={`project-${project.id}`}
+                data-project-id={project.id}
+                data-important={project.featured ? "true" : undefined}
+                data-important-title={project.featured ? project.title : undefined}
                 variants={{
                   hidden: { opacity: 0, scale: 0.95, y: 20 },
                   visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.5 } }
                 }}
-                className="group relative flex flex-col p-8 border border-dashed border-neutral-700/60 bg-[#0a0a0a]/60 hover:border-amber-500/50 transition-colors duration-500 overflow-hidden rounded-3xl justify-between"
+                className={`group relative flex flex-col p-8 border border-dashed border-neutral-700/60 bg-[#0a0a0a]/60 hover:border-amber-500/50 transition-colors duration-500 overflow-hidden rounded-3xl justify-between ${
+                  project.featured ? 'important-asset' : ''
+                }`}
               >
                 <div className="absolute top-0 left-0 w-2.5 h-2.5 border-t-[3px] border-l-[3px] border-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.8)] -translate-x-[2px] -translate-y-[2px]" />
                 <div className="absolute top-0 right-0 w-2.5 h-2.5 border-t-[3px] border-r-[3px] border-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.8)] translate-x-[2px] -translate-y-[2px]" />
@@ -829,7 +830,15 @@ export default function App() {
 
                 <div>
                   <div className="flex justify-between items-start mb-6">
-                    <span className="text-sm font-mono text-amber-500 font-bold">#{project.id}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-mono text-amber-500 font-bold">#{project.id}</span>
+                      {project.featured && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-cyan-500/15 border border-cyan-400/40 text-cyan-300 text-[10px] font-mono tracking-wider font-semibold">
+                          <Sparkles size={10} className="text-cyan-400" />
+                          CRITICAL ASSET
+                        </span>
+                      )}
+                    </div>
                     <span className="text-[10px] font-mono uppercase tracking-widest text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20">
                       {project.category}
                     </span>
@@ -1124,20 +1133,26 @@ export default function App() {
             {/* Direct Connect Pills */}
             <div className="flex flex-wrap items-center gap-4 mb-4">
               <button 
+                id="contact-connect"
+                data-important="true"
+                data-important-title="Connect / Hire"
                 onClick={() => {
                   sound.playOpenModal();
                   setIsContactOpen(true);
                 }}
-                className="premium-btn premium-btn--primary premium-btn--large inline-flex items-center gap-4 group cursor-pointer"
+                className="important-asset premium-btn premium-btn--primary premium-btn--large inline-flex items-center gap-4 group cursor-pointer"
               >
                 <span className="text-xl md:text-3xl text-white font-medium">{DATA.email}</span>
                 <ArrowUpRight className="text-neutral-500 group-hover:text-amber-500 transition-colors" size={24} />
               </button>
 
               <a 
+                id="contact-phone"
+                data-important="true"
+                data-important-title="Call / WhatsApp"
                 href={`tel:${DATA.phoneRaw}`}
                 onClick={handleCopyPhone}
-                className="premium-btn premium-btn--secondary premium-btn--large inline-flex items-center gap-3 text-emerald-300 group cursor-pointer"
+                className="important-asset premium-btn premium-btn--secondary premium-btn--large inline-flex items-center gap-3 text-emerald-300 group cursor-pointer"
                 title="Direct Phone Line / WhatsApp"
               >
                 <Phone size={22} className="text-emerald-400" />
@@ -1145,8 +1160,11 @@ export default function App() {
               </a>
 
               <button 
+                id="contact-copy-email"
+                data-important="true"
+                data-important-title="Copy Email"
                 onClick={handleCopyEmail}
-                className="premium-btn premium-btn--dark premium-btn--icon text-neutral-400 cursor-pointer"
+                className="important-asset premium-btn premium-btn--dark premium-btn--icon text-neutral-400 cursor-pointer"
                 title="Copy Email"
               >
                 <Copy size={24} />
