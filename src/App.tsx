@@ -202,7 +202,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 font-sans text-neutral-400 selection:bg-amber-500/30 selection:text-amber-200 cursor-default relative overflow-hidden">
+    <div className="min-h-screen bg-neutral-950 font-sans text-neutral-400 selection:bg-amber-500/30 selection:text-amber-200 cursor-none relative overflow-hidden">
       <motion.div
         className="fixed left-0 right-0 top-0 z-[120] h-0.5 origin-left bg-gradient-to-r from-amber-400 via-orange-400 to-cyan-400 shadow-[0_0_14px_rgba(245,158,11,0.75)]"
         style={{ scaleX: scrollYProgress }}
