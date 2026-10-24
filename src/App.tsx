@@ -39,7 +39,6 @@ import { CommandPaletteModal } from './components/CommandPaletteModal';
 import { ContactModal } from './components/ContactModal';
 import { ResumePreviewModal } from './components/ResumePreviewModal';
 import { LiveGitHubTracker } from './components/LiveGitHubTracker';
-import { PatchrightCursorTracker } from './components/PatchrightCursorTracker';
 import { sound } from './components/SoundEffects';
 
 const SectionHeader = ({ title, subtitle }: { title: string; subtitle?: string }) => (
@@ -154,7 +153,7 @@ export default function App() {
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
     };
-    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, [mouseX, mouseY]);
 
@@ -202,20 +201,19 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 font-sans text-neutral-400 selection:bg-amber-500/30 selection:text-amber-200 cursor-none relative overflow-hidden">
+    <div className="min-h-screen bg-neutral-950 font-sans text-neutral-400 selection:bg-amber-500/30 selection:text-amber-200 relative overflow-hidden">
       <motion.div
         className="fixed left-0 right-0 top-0 z-[120] h-0.5 origin-left bg-gradient-to-r from-amber-400 via-orange-400 to-cyan-400 shadow-[0_0_14px_rgba(245,158,11,0.75)]"
         style={{ scaleX: scrollYProgress }}
       />
-      {/* Background Glow Effects & Subtle Cyber Pattern */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <motion.div animate={{ x: [0, 35, 0], y: [0, -25, 0], scale: [1, 1.08, 1] }} transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }} className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-amber-500/10 blur-[150px]" />
-        <motion.div animate={{ x: [0, -45, 0], y: [0, 30, 0], scale: [1, 0.94, 1] }} transition={{ duration: 22, repeat: Infinity, ease: "easeInOut", delay: 2 }} className="absolute top-[40%] right-[-15%] w-[45%] h-[45%] rounded-full bg-cyan-500/8 blur-[160px]" />
-        <motion.div animate={{ x: [0, -25, 0], y: [0, -35, 0] }} transition={{ duration: 16, repeat: Infinity, ease: "easeInOut", delay: 1 }} className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-orange-500/10 blur-[150px]" />
-        <div className="absolute inset-0 bg-[radial-gradient(#262626_1px,transparent_1px)] [background-size:32px_32px] opacity-25"></div>
+      {/* Rich Ambient Lighting & Subtle Grid Texture */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+        <motion.div animate={{ x: [0, 25, 0], y: [0, -20, 0], scale: [1, 1.06, 1] }} transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }} className="absolute top-[-15%] left-[-10%] w-[55%] h-[55%] rounded-full bg-gradient-to-br from-amber-500/12 to-orange-500/5 blur-[140px]" />
+        <motion.div animate={{ x: [0, -30, 0], y: [0, 25, 0], scale: [1, 0.95, 1] }} transition={{ duration: 22, repeat: Infinity, ease: "easeInOut", delay: 2 }} className="absolute top-[35%] right-[-12%] w-[45%] h-[45%] rounded-full bg-gradient-to-bl from-cyan-500/10 to-blue-500/4 blur-[150px]" />
+        <motion.div animate={{ x: [0, -20, 0], y: [0, -25, 0] }} transition={{ duration: 16, repeat: Infinity, ease: "easeInOut", delay: 1 }} className="absolute bottom-[-15%] left-[20%] w-[50%] h-[50%] rounded-full bg-gradient-to-tr from-amber-500/8 to-emerald-500/6 blur-[150px]" />
+        <div className="absolute inset-0 bg-[radial-gradient(#333_1px,transparent_1px)] [background-size:28px_28px] opacity-20"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(245,158,11,0.07),rgba(255,255,255,0))]"></div>
       </div>
-      
-      <PatchrightCursorTracker />
 
       {/* Floating Toast Notification */}
       <AnimatePresence>
@@ -413,13 +411,18 @@ export default function App() {
             <motion.img 
               src="/profile.png" 
               alt="Profile" 
-              className="w-full h-auto max-h-[68vh] object-contain object-bottom drop-shadow-[0_0_60px_rgba(245,158,11,0.2)] relative z-10"
+              className="w-full h-auto max-h-[68vh] object-contain object-bottom drop-shadow-[0_0_60px_rgba(245,158,11,0.25)] relative z-10"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.src = "https://ui-avatars.com/api/?name=Majidulla+SK&background=0a0a0a&color=fbbf24&size=512";
               }}
             />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-amber-500/20 blur-[110px] rounded-full z-0 pointer-events-none"></div>
+            {/* Luminous dynamic breathing halo */}
+            <motion.div 
+              animate={{ scale: [1, 1.08, 1], opacity: [0.22, 0.34, 0.22] }} 
+              transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }} 
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] h-[85%] bg-gradient-to-tr from-amber-500/25 via-orange-500/20 to-cyan-500/15 blur-[120px] rounded-full z-0 pointer-events-none"
+            />
             <div className="absolute bottom-[-2px] left-0 w-full h-32 bg-gradient-to-t from-neutral-950 via-neutral-950/80 to-transparent z-20 pointer-events-none"></div>
           </motion.div>
 
@@ -427,19 +430,40 @@ export default function App() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="relative z-30 mt-[-3.5rem] md:mt-[-4.5rem] text-center flex flex-col items-center gap-2"
+            className="relative z-30 mt-[-3.5rem] md:mt-[-4.5rem] text-center flex flex-col items-center gap-3 w-full"
           >
-             <motion.div whileHover={{ scale: 1.04, y: -2 }} className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-neutral-900/90 border border-amber-500/30 text-amber-400 text-xs font-mono uppercase tracking-widest backdrop-blur-md shadow-lg">
-                <Sparkles size={12} />
-                <span>AI Full-Stack • Cloud Infrastructure • DevSecOps</span>
-             </motion.div>
+             {/* Dual Status Badges */}
+             <div className="flex flex-wrap items-center justify-center gap-2.5">
+               <motion.div 
+                 whileHover={{ scale: 1.04, y: -2 }} 
+                 className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 text-xs font-mono backdrop-blur-md shadow-lg shadow-emerald-950/40"
+               >
+                 <span className="relative flex h-2 w-2">
+                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                 </span>
+                 <span>Open to Full-Time Roles & High-Impact Internships</span>
+               </motion.div>
+
+               <motion.div 
+                 whileHover={{ scale: 1.04, y: -2 }} 
+                 className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-neutral-900/90 border border-amber-500/30 text-amber-400 text-xs font-mono uppercase tracking-widest backdrop-blur-md shadow-lg shadow-amber-950/30"
+               >
+                  <Sparkles size={12} />
+                  <span>AI Full-Stack • Cloud & DevSecOps</span>
+               </motion.div>
+             </div>
              
-             <h2 className="text-4xl md:text-6xl lg:text-7xl font-serif text-white tracking-tight leading-none mt-2">
+             <h2 className="text-4xl md:text-6xl lg:text-7xl font-serif text-white tracking-tight leading-none mt-1">
                 {DATA.title}
              </h2>
 
+             <p className="text-neutral-400 text-xs sm:text-sm md:text-base font-mono max-w-xl mx-auto text-neutral-400/90">
+                {DATA.tagline}
+             </p>
+
              {/* Hero Action Buttons & Direct Channels */}
-             <motion.div initial="hidden" animate="visible" variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.1, delayChildren: 0.85 } } }} className="flex flex-wrap items-center justify-center gap-3 mt-6">
+             <motion.div initial="hidden" animate="visible" variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.1, delayChildren: 0.85 } } }} className="flex flex-wrap items-center justify-center gap-3 mt-4">
                 <button
                   id="hero-ai-copilot"
                   data-important="true"
@@ -479,6 +503,36 @@ export default function App() {
                   <FileText size={15} className="text-amber-400" />
                   <span>Resume PDF</span>
                 </button>
+             </motion.div>
+
+             {/* Interactive Tech Competency Ribbon */}
+             <motion.div 
+               initial={{ opacity: 0, y: 15 }}
+               animate={{ opacity: 1, y: 0 }}
+               transition={{ duration: 0.8, delay: 1 }}
+               className="mt-6 flex flex-wrap items-center justify-center gap-2 max-w-2xl px-4"
+             >
+               {[
+                 { name: "AWS Cloud", icon: "devicon-amazonwebservices-plain text-[#FF9900]" },
+                 { name: "Kubernetes", icon: "devicon-kubernetes-plain text-[#326CE5]" },
+                 { name: "Docker", icon: "devicon-docker-plain text-[#2496ED]" },
+                 { name: "Terraform", icon: "devicon-terraform-plain text-[#844FBA]" },
+                 { name: "React 19", icon: "devicon-react-original text-[#61DAFB]" },
+                 { name: "Node.js", icon: "devicon-nodejs-plain text-[#339933]" },
+                 { name: "TypeScript", icon: "devicon-typescript-plain text-[#3178C6]" },
+                 { name: "FastAPI", icon: "devicon-fastapi-plain text-[#009688]" },
+                 { name: "Python", icon: "devicon-python-plain text-[#3776AB]" },
+                 { name: "Argo CD", icon: "devicon-argocd-plain text-[#EF6C00]" }
+               ].map((tech, i) => (
+                 <motion.span
+                   key={i}
+                   whileHover={{ y: -2, scale: 1.05 }}
+                   className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-neutral-900/60 border border-neutral-800/80 hover:border-amber-500/40 text-neutral-300 hover:text-white text-xs font-mono transition-all backdrop-blur-sm cursor-default"
+                 >
+                   <i className={`${tech.icon} text-sm`} />
+                   <span>{tech.name}</span>
+                 </motion.span>
+               ))}
              </motion.div>
           </motion.div>
         </section>
@@ -535,20 +589,32 @@ export default function App() {
                   hidden: { opacity: 0 },
                   visible: { opacity: 1, transition: { staggerChildren: 0.12 } }
                 }}
-                className="grid grid-cols-2 gap-4 md:gap-6"
+                className="grid grid-cols-2 gap-4 md:gap-5"
               >
                 {DATA.stats.map((stat, i) => (
                   <motion.div 
                     key={i} 
                     variants={{
-                      hidden: { opacity: 0, y: 10 },
-                      visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
+                      hidden: { opacity: 0, y: 15 },
+                      visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } }
                     }}
-                    className="flex flex-col p-4 bg-neutral-900/40 border border-neutral-800/70 rounded-2xl hover:border-amber-500/40 transition-colors"
+                    whileHover={{ y: -4, scale: 1.02 }}
+                    className="flex flex-col p-5 bg-neutral-900/60 backdrop-blur-md border border-neutral-800/80 rounded-2xl hover:border-amber-500/50 hover:bg-neutral-900/90 transition-all shadow-lg hover:shadow-[0_0_25px_rgba(245,158,11,0.1)] group cursor-default"
                   >
-                    <span className="text-2xl md:text-3xl font-bold font-mono text-amber-400 mb-1">{stat.value}</span>
-                    <span className="text-white text-xs font-semibold leading-snug">{stat.label}</span>
-                    <span className="text-neutral-500 text-[10px] font-mono mt-0.5">{stat.change}</span>
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="p-2 rounded-xl bg-neutral-950 border border-neutral-800 group-hover:border-amber-500/30 transition-colors">
+                        {i === 0 && <Github size={16} className="text-amber-400" />}
+                        {i === 1 && <Activity size={16} className="text-cyan-400" />}
+                        {i === 2 && <Zap size={16} className="text-emerald-400" />}
+                        {i === 3 && <Cloud size={16} className="text-amber-400" />}
+                      </div>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
+                        <span className="w-1 h-1 rounded-full bg-emerald-400 animate-pulse"></span>
+                        {stat.change}
+                      </span>
+                    </div>
+                    <span className="text-2xl md:text-3xl font-bold font-mono text-white group-hover:text-amber-400 transition-colors mb-1">{stat.value}</span>
+                    <span className="text-neutral-400 text-xs font-semibold leading-snug">{stat.label}</span>
                   </motion.div>
                 ))}
               </motion.div>
@@ -616,11 +682,15 @@ export default function App() {
                             >
                               <p className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-amber-500 mb-3">Key Technologies</p>
                               <div className="flex flex-wrap gap-2">
-                                {service.skills.map((skill, i) => (
-                                  <span key={i} className="px-3 py-1 bg-neutral-900 text-neutral-300 rounded-lg text-xs font-mono border border-neutral-800">
-                                    {skill}
-                                  </span>
-                                ))}
+                                {service.skills.map((skill, i) => {
+                                  const iconClass = getTechIcon(skill);
+                                  return (
+                                    <span key={i} className="inline-flex items-center gap-1.5 px-3 py-1 bg-neutral-900/90 hover:bg-neutral-800 text-neutral-300 hover:text-white rounded-lg text-xs font-mono border border-neutral-800 hover:border-amber-500/40 transition-all">
+                                      {iconClass ? <i className={`${iconClass} text-xs`} /> : <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />}
+                                      <span>{skill}</span>
+                                    </span>
+                                  );
+                                })}
                               </div>
                             </motion.div>
                           )}
@@ -852,6 +922,19 @@ export default function App() {
                     {project.description}
                   </p>
 
+                  {/* Metrics if available */}
+                  {project.metrics && project.metrics.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {project.metrics.map((m, idx) => (
+                        <span key={idx} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[11px] font-mono">
+                          <Zap size={11} className="text-amber-400" />
+                          <span className="font-bold">{m.value}</span>
+                          <span className="text-neutral-400">{m.label}</span>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
                   {/* Highlights if available */}
                   {project.highlights && project.highlights.length > 0 && (
                     <div className="mb-6 p-3.5 bg-neutral-950/70 rounded-2xl border border-neutral-800/60 text-xs font-mono text-neutral-300 space-y-1.5">
@@ -867,11 +950,15 @@ export default function App() {
                 
                 <div>
                   <div className="flex flex-wrap gap-1.5 mb-6 pt-4 border-t border-neutral-800/60">
-                    {project.tools.map((tool, i) => (
-                      <span key={i} className="px-2.5 py-1 bg-neutral-900 text-neutral-300 rounded-lg text-[11px] font-mono border border-neutral-800">
-                        {tool}
-                      </span>
-                    ))}
+                    {project.tools.map((tool, i) => {
+                      const iconClass = getTechIcon(tool);
+                      return (
+                        <span key={i} className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-neutral-900/90 hover:bg-neutral-800 text-neutral-300 hover:text-white rounded-lg text-[11px] font-mono border border-neutral-800 hover:border-amber-500/40 transition-all">
+                          {iconClass ? <i className={`${iconClass} text-xs`} /> : <span className="w-1 h-1 rounded-full bg-amber-400" />}
+                          <span>{tool}</span>
+                        </span>
+                      );
+                    })}
                   </div>
 
                   {/* Action Buttons */}
@@ -1095,9 +1182,8 @@ export default function App() {
         id="contact" 
         className="relative pt-24 pb-16 px-6 overflow-hidden border-t border-neutral-900 bg-neutral-950"
         onMouseMove={(e) => {
-          const rect = e.currentTarget.getBoundingClientRect();
-          e.currentTarget.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
-          e.currentTarget.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+          e.currentTarget.style.setProperty('--mouse-x', `${e.nativeEvent.offsetX}px`);
+          e.currentTarget.style.setProperty('--mouse-y', `${e.nativeEvent.offsetY}px`);
         }}
       >
         {/* Large Ambient Watermark */}

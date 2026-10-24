@@ -10,11 +10,22 @@
 body {
   @apply bg-neutral-950 text-neutral-200 font-sans antialiased selection:bg-amber-500/30 selection:text-amber-200;
   overflow-x: hidden;
-  cursor: none;
+  cursor: auto;
 }
 
-*, *::before, *::after {
-  cursor: none !important;
+/* Crisp, responsive native cursor interactions */
+button,
+a,
+[role="button"],
+input[type="submit"],
+input[type="button"],
+.cursor-pointer {
+  cursor: pointer;
+}
+
+input,
+textarea {
+  cursor: text;
 }
 
 html {
@@ -271,6 +282,42 @@ html {
   animation: pulseAura 2.2s infinite alternate ease-in-out;
 }
 
+/* Rich Visual Representation & Clean Motion Styles */
+.glass-card {
+  background: linear-gradient(135deg, rgba(23, 23, 23, 0.7) 0%, rgba(10, 10, 10, 0.8) 100%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card:hover {
+  border-color: rgba(245, 158, 11, 0.35);
+  box-shadow: 0 20px 40px -15px rgba(245, 158, 11, 0.1), 0 0 20px rgba(245, 158, 11, 0.06);
+  transform: translateY(-3px);
+}
+
+.glow-beacon {
+  position: relative;
+}
+
+.glow-beacon::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.4) 0%, transparent 70%);
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0.6;
+  animation: beaconPulse 3s ease-in-out infinite;
+}
+
+@keyframes beaconPulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.12); }
+}
+
 @keyframes pulseAura {
   0% {
     box-shadow: 0 0 20px rgba(245, 158, 11, 0.2), 0 0 8px rgba(34, 211, 238, 0.2);
@@ -278,6 +325,39 @@ html {
   100% {
     box-shadow: 0 0 45px rgba(245, 158, 11, 0.45), 0 0 25px rgba(34, 211, 238, 0.4);
   }
+}
+
+/* Subtle Shimmer for High-Impact Highlights */
+.shimmer-text {
+  background: linear-gradient(
+    90deg,
+    #ffffff 0%,
+    #fef08a 25%,
+    #fbbf24 50%,
+    #fef08a 75%,
+    #ffffff 100%
+  );
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: shine 6s linear infinite;
+}
+
+@keyframes shine {
+  to {
+    background-position: 200% center;
+  }
+}
+
+/* Tech card micro-interaction */
+.tech-pill {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tech-pill:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 8px 16px -4px rgba(245, 158, 11, 0.2);
 }
 
 /* Print Optimization */
