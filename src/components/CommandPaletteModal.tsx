@@ -26,6 +26,7 @@ interface CommandPaletteModalProps {
   onOpenResume: () => void;
   onOpenContact: () => void;
   onSelectProject?: (projectId: string) => void;
+  onOpenResumeIntelligence?: (tab?: 'crawler' | 'analysis' | 'job-match' | 'recruiter', query?: string) => void;
 }
 
 export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
@@ -34,7 +35,8 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
   onOpenAI,
   onOpenResume,
   onOpenContact,
-  onSelectProject
+  onSelectProject,
+  onOpenResumeIntelligence
 }) => {
   const [query, setQuery] = useState('');
   const [copiedEmail, setCopiedEmail] = useState(false);
@@ -65,6 +67,24 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
   };
 
   const navActions = [
+    { 
+      icon: <Search size={16} className="text-amber-400" />, 
+      title: "Resume Intelligence: Interactive Crawler Search", 
+      shortcut: "CRAWL", 
+      action: () => { onClose(); onOpenResumeIntelligence?.('crawler'); } 
+    },
+    { 
+      icon: <Terminal size={16} className="text-cyan-400" />, 
+      title: "Analyze My Resume: Skill Map & Project Graph", 
+      shortcut: "GRAPH", 
+      action: () => { onClose(); onOpenResumeIntelligence?.('analysis'); } 
+    },
+    { 
+      icon: <FileText size={16} className="text-purple-400" />, 
+      title: "Analyze Job Match: JD Fit Score & Evidence", 
+      shortcut: "MATCH", 
+      action: () => { onClose(); onOpenResumeIntelligence?.('job-match'); } 
+    },
     { icon: <Bot size={16} className="text-amber-400" />, title: "Open AI Resume Copilot", shortcut: "AI", action: () => { onClose(); onOpenAI(); } },
     { icon: <FileText size={16} className="text-emerald-400" />, title: "View ATS Resume / Print PDF", shortcut: "PDF", action: () => { onClose(); onOpenResume(); } },
     { icon: <Mail size={16} className="text-cyan-400" />, title: "Contact Majid (Direct / Form)", shortcut: "MSG", action: () => { onClose(); onOpenContact(); } },

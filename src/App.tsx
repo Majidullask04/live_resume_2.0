@@ -30,7 +30,9 @@ import {
   Cloud,
   Boxes,
   Server,
-  Wrench
+  Wrench,
+  Search,
+  Radio
 } from 'lucide-react';
 import { DATA, Project } from './data';
 import { AICopilotModal } from './components/AICopilotModal';
@@ -39,6 +41,7 @@ import { CommandPaletteModal } from './components/CommandPaletteModal';
 import { ContactModal } from './components/ContactModal';
 import { ResumePreviewModal } from './components/ResumePreviewModal';
 import { LiveGitHubTracker } from './components/LiveGitHubTracker';
+import { ResumeIntelligenceModal } from './components/ResumeIntelligenceModal';
 import { sound } from './components/SoundEffects';
 
 const SectionHeader = ({ title, subtitle }: { title: string; subtitle?: string }) => (
@@ -114,11 +117,35 @@ export default function App() {
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState<boolean>(false);
   const [isContactOpen, setIsContactOpen] = useState<boolean>(false);
   const [isResumeOpen, setIsResumeOpen] = useState<boolean>(false);
+  const [isResumeIntelligenceOpen, setIsResumeIntelligenceOpen] = useState<boolean>(false);
+  const [intelligenceInitialTab, setIntelligenceInitialTab] = useState<'crawler' | 'analysis' | 'job-match' | 'recruiter'>('crawler');
+  const [intelligenceInitialQuery, setIntelligenceInitialQuery] = useState<string>('');
+  const [highlightedSection, setHighlightedSection] = useState<string | null>(null);
   const [selectedProjectForDetail, setSelectedProjectForDetail] = useState<Project | null>(null);
 
   const { scrollYProgress } = useScroll();
 
-  // Global Keyboard Shortcuts (Cmd+K / Ctrl+K)
+  const handleOpenResumeIntelligence = (tab: 'crawler' | 'analysis' | 'job-match' | 'recruiter' = 'crawler', query: string = '') => {
+    setIntelligenceInitialTab(tab);
+    setIntelligenceInitialQuery(query);
+    sound.playOpenModal();
+    setIsResumeIntelligenceOpen(true);
+  };
+
+  const handleNavigateToSectionWithHighlight = (sectionId: string, title?: string) => {
+    const cleanId = sectionId.startsWith('#') ? sectionId.slice(1) : sectionId;
+    const targetElement = document.getElementById(cleanId);
+    if (targetElement) {
+      targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setHighlightedSection(cleanId);
+      sound.playSuccess();
+      setTimeout(() => {
+        setHighlightedSection(null);
+      }, 3400);
+    }
+  };
+
+  // Global Keyboard Shortcuts (Cmd+K / Ctrl+K for palette, Cmd+/ or Cmd+J for Resume Intelligence)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -126,11 +153,16 @@ export default function App() {
         sound.playOpenModal();
         setIsCommandPaletteOpen(prev => !prev);
       }
+      if ((e.metaKey || e.ctrlKey) && (e.key === '/' || e.key === 'j')) {
+        e.preventDefault();
+        handleOpenResumeIntelligence('crawler');
+      }
       if (e.key === 'Escape') {
         setIsAICopilotOpen(false);
         setIsCommandPaletteOpen(false);
         setIsContactOpen(false);
         setIsResumeOpen(false);
+        setIsResumeIntelligenceOpen(false);
         setSelectedProjectForDetail(null);
       }
     };
@@ -242,7 +274,27 @@ export default function App() {
       </AnimatePresence>
 
       {/* Floating Action HUD (Bottom-Right & Bottom-Left) */}
-      <div className="fixed bottom-6 right-6 z-[100] flex items-center gap-3">
+      <div className="fixed bottom-6 right-6 z-[100] flex flex-col sm:flex-row items-end sm:items-center gap-2.5">
+        {/* Floating Resume Intelligence Crawler Button */}
+        <motion.button 
+          id="floating-resume-crawler"
+          data-important="true"
+          data-important-title="Resume Intelligence Crawler"
+          onClick={() => handleOpenResumeIntelligence('crawler')}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, delay: 0.7 }}
+          className="important-asset flex items-center gap-2.5 px-4 sm:px-4.5 py-3 bg-neutral-900/95 hover:bg-cyan-500 text-neutral-200 hover:text-neutral-950 backdrop-blur-md border border-cyan-500/40 hover:border-cyan-400 rounded-full shadow-2xl hover:shadow-[0_0_30px_rgba(6,182,212,0.4)] transition-all group cursor-pointer active:scale-95"
+          title="Open AI Resume Crawler & Search (Cmd + /)"
+        >
+          <span className="relative flex h-2.5 w-2.5">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-cyan-500 group-hover:bg-neutral-950"></span>
+          </span>
+          <Search size={15} className="text-cyan-400 group-hover:text-neutral-950" />
+          <span className="text-xs font-mono font-bold tracking-wide uppercase">Crawler Search</span>
+        </motion.button>
+
         {/* Floating AI Resume Copilot Button */}
         <motion.button 
           id="floating-ai-copilot"
@@ -326,6 +378,22 @@ export default function App() {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
+          {/* Interactive Resume Intelligence Search Trigger */}
+          <button 
+            id="nav-search-crawler"
+            data-important="true"
+            data-important-title="Resume Intelligence Crawler"
+            onClick={() => handleOpenResumeIntelligence('crawler')}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-neutral-900/90 hover:bg-neutral-800 border border-amber-500/30 hover:border-amber-400 text-neutral-300 hover:text-white text-xs font-mono backdrop-blur-md transition-all cursor-pointer shadow-md group"
+            title="Search Resume & Web Crawler (Cmd + /)"
+          >
+            <Search size={13} className="text-amber-400 group-hover:scale-110 transition-transform" />
+            <span className="hidden xl:inline font-semibold">Resume Intelligence</span>
+            <kbd className="hidden sm:inline-block px-1.5 py-0.2 bg-neutral-800 text-[10px] text-amber-300/80 rounded border border-neutral-700 font-mono">
+              ⌘/
+            </kbd>
+          </button>
+
           {/* Direct Phone Call Trigger */}
           <a 
             href={`tel:${DATA.phoneRaw}`}
@@ -376,7 +444,7 @@ export default function App() {
       >
         
         {/* Landing Hero Section */}
-        <section className="relative flex flex-col items-center justify-center min-h-[85vh] pt-6 overflow-visible z-10 w-full" id="landing">
+        <section className={`relative flex flex-col items-center justify-center min-h-[85vh] pt-6 overflow-visible z-10 w-full transition-all duration-700 ${highlightedSection === 'landing' ? 'search-section-highlight' : ''}`} id="landing">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center z-0 pointer-events-none flex flex-col items-center justify-center overflow-visible">
             <motion.h1 
               style={{ x: nameParallaxX, y: nameParallaxY }}
@@ -465,6 +533,17 @@ export default function App() {
              {/* Hero Action Buttons & Direct Channels */}
              <motion.div initial="hidden" animate="visible" variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.1, delayChildren: 0.85 } } }} className="flex flex-wrap items-center justify-center gap-3 mt-4">
                 <button
+                  id="hero-resume-intelligence"
+                  data-important="true"
+                  data-important-title="Resume Intelligence Crawler"
+                  onClick={() => handleOpenResumeIntelligence('crawler')}
+                  className="hero-cta premium-btn premium-btn--primary important-asset flex items-center gap-2 font-mono font-bold text-xs uppercase tracking-wider cursor-pointer shadow-lg shadow-amber-500/20"
+                >
+                  <Search size={15} />
+                  <span>Resume Intelligence (Crawler)</span>
+                </button>
+
+                <button
                   id="hero-ai-copilot"
                   data-important="true"
                   data-important-title="Interview AI Copilot"
@@ -472,9 +551,9 @@ export default function App() {
                     sound.playOpenModal();
                     setIsAICopilotOpen(true);
                   }}
-                  className="hero-cta premium-btn premium-btn--primary important-asset flex items-center gap-2 font-mono font-bold text-xs uppercase tracking-wider cursor-pointer"
+                  className="hero-cta premium-btn premium-btn--dark important-asset flex items-center gap-2 font-mono text-xs uppercase tracking-wider cursor-pointer border-cyan-500/40 text-cyan-300"
                 >
-                  <Bot size={15} />
+                  <Bot size={15} className="text-cyan-400" />
                   <span>Interview AI Copilot</span>
                 </button>
 
@@ -542,13 +621,13 @@ export default function App() {
           id="github-live" 
           data-important="true" 
           data-important-title="Live GitHub Telemetry" 
-          className="py-2 important-asset"
+          className={`py-2 important-asset transition-all duration-700 ${highlightedSection === 'github-live' ? 'search-section-highlight' : ''}`}
         >
           <LiveGitHubTracker />
         </section>
 
         {/* About Section */}
-        <section id="about" className="py-12 md:py-20 border-b border-neutral-900">
+        <section id="about" className={`py-12 md:py-20 border-b border-neutral-900 transition-all duration-700 ${highlightedSection === 'about' ? 'search-section-highlight' : ''}`}>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
@@ -623,7 +702,7 @@ export default function App() {
         </section>
 
         {/* Capabilities / Services */}
-        <section id="services" className="py-12 md:py-20 border-b border-neutral-900">
+        <section id="services" className={`py-12 md:py-20 border-b border-neutral-900 transition-all duration-700 ${highlightedSection === 'services' ? 'search-section-highlight' : ''}`}>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 relative">
             <div className="lg:col-span-5 h-fit lg:sticky lg:top-36">
               <span className="text-amber-500 text-xs font-mono font-bold tracking-[0.3em] uppercase block mb-4">Core Capabilities</span>
@@ -713,7 +792,7 @@ export default function App() {
         </section>
 
         {/* Experience Timeline */}
-        <section id="experience" ref={experienceRef} className="py-12 md:py-20 border-b border-neutral-900">
+        <section id="experience" ref={experienceRef} className={`py-12 md:py-20 border-b border-neutral-900 transition-all duration-700 ${highlightedSection === 'experience' ? 'search-section-highlight' : ''}`}>
           <div className="text-center mb-16">
             <span className="text-amber-500 text-xs font-mono font-bold tracking-[0.3em] uppercase block mb-3">Career Path</span>
             <h2 className="text-4xl md:text-6xl font-display font-medium text-white tracking-tight">
@@ -826,7 +905,7 @@ export default function App() {
         </section>
 
         {/* Portfolio / Projects */}
-        <section id="work" className="py-12 md:py-20 border-b border-neutral-900">
+        <section id="work" className={`py-12 md:py-20 border-b border-neutral-900 transition-all duration-700 ${highlightedSection === 'work' ? 'search-section-highlight' : ''}`}>
           <div className="flex flex-col items-start mb-12">
             <div className="flex items-center gap-4 mb-4">
               <div className="w-12 h-px bg-amber-500" />
@@ -1006,7 +1085,7 @@ export default function App() {
         </section>
 
         {/* Tech Stack & Expertise */}
-        <section id="skills" className="py-16 md:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section id="skills" className={`py-16 md:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-700 ${highlightedSection === 'skills' ? 'search-section-highlight' : ''}`}>
           <div className="flex flex-col items-center mb-12 text-center">
             <div className="flex items-center gap-4 mb-4">
               <div className="w-8 h-px bg-amber-500" />
@@ -1180,7 +1259,7 @@ export default function App() {
       {/* Footer & Contact Section */}
       <footer 
         id="contact" 
-        className="relative pt-24 pb-16 px-6 overflow-hidden border-t border-neutral-900 bg-neutral-950"
+        className={`relative pt-24 pb-16 px-6 overflow-hidden border-t border-neutral-900 bg-neutral-950 transition-all duration-700 ${highlightedSection === 'contact' ? 'search-section-highlight' : ''}`}
         onMouseMove={(e) => {
           e.currentTarget.style.setProperty('--mouse-x', `${e.nativeEvent.offsetX}px`);
           e.currentTarget.style.setProperty('--mouse-y', `${e.nativeEvent.offsetY}px`);
@@ -1346,6 +1425,15 @@ export default function App() {
       </footer>
 
       {/* Interactive Modals */}
+      <ResumeIntelligenceModal
+        isOpen={isResumeIntelligenceOpen}
+        onClose={() => setIsResumeIntelligenceOpen(false)}
+        onNavigateToSection={handleNavigateToSectionWithHighlight}
+        onOpenProjectDetail={handleOpenProjectModal}
+        initialTab={intelligenceInitialTab}
+        initialQuery={intelligenceInitialQuery}
+      />
+
       <AICopilotModal
         isOpen={isAICopilotOpen}
         onClose={() => setIsAICopilotOpen(false)}
@@ -1369,6 +1457,7 @@ export default function App() {
         onOpenResume={() => setIsResumeOpen(true)}
         onOpenContact={() => setIsContactOpen(true)}
         onSelectProject={handleOpenProjectModal}
+        onOpenResumeIntelligence={(tab, query) => handleOpenResumeIntelligence(tab, query)}
       />
 
       <ContactModal
